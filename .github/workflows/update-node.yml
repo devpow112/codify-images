@@ -1,0 +1,50 @@
+name: Update Node
+on:
+  push:
+    branches: main
+    paths: .github/workflows/update-node.yml
+  schedule:
+    - cron: '0 15 * * 1'
+permissions:
+  contents: write
+concurrency: update-node
+jobs:
+  update-node:
+    name: Update Node
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.5
+        with:
+          persist-credentials: false
+      - name: Determine version
+        id: node-version
+        run: |
+          OLD_VERSION=$(<.nvmrc)
+          NEW_VERSION=$(curl -sSf https://resolve-node.vercel.app/lts)
+          NEW_VERSION=${NEW_VERSION#'v'}
+          echo "::set-output name=new::$NEW_VERSION"
+          echo "::set-output name=old::$OLD_VERSION"
+      - name: Update .nvmrc
+        run: echo ${{steps.node-version.outputs.new}} > .nvmrc
+      - name: Check for changes
+        id: changes
+        run: git diff --exit-code .nvmrc || echo '::set-output name=exist::true'
+      - name: Push commit
+        if: steps.changes.outputs.exist
+        run: |
+          git config user.name $COMMIT_USERNAME
+          git config user.email $COMMIT_EMAIL
+          git add .nvmrc
+          git commit -m "chore(node): bump from $OLD_VERSION to $NEW_VERSION"
+          CREDENTIALS="x-access-token:$GITHUB_TOKEN"
+          URL="https://$CREDENTIALS@github.com/${{github.repository}}.git"
+          git remote set-url origin $URL
+          git push origin main
+        env:
+          GITHUB_TOKEN: ${{secrets.PERSONAL_GITHUB_TOKEN}}
+          COMMIT_USERNAME: github-actions[bot]
+          COMMIT_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+          NEW_VERSION: ${{steps.node-version.outputs.new}}
+          OLD_VERSION: ${{steps.node-version.outputs.old}}

@@ -1,0 +1,53 @@
+name: Release
+on:
+  schedule:
+    - cron: '0 19 * * *'
+  workflow_run:
+    workflows: CI
+    types: completed
+    branches: main
+permissions:
+  contents: read
+concurrency: release
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    if: >
+      (
+        github.event_name == 'schedule' &&
+        !startsWith(github.event.head_commit.message, 'chore(release):') &&
+        !startsWith(github.event.head_commit.message, 'chore(license):') &&
+        !startsWith(github.event.head_commit.message, 'chore(node):')
+      ) || (
+        github.event_name == 'workflow_run' &&
+        github.event.workflow_run.conclusion == 'success' && (
+          startsWith(github.event.workflow_run.head_commit.message, 'fix') ||
+          startsWith(github.event.workflow_run.head_commit.message, 'feat') ||
+          startsWith(github.event.workflow_run.head_commit.message, 'Revert')
+        )
+      )
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.5
+        with:
+          persist-credentials: false
+      - name: Get node version
+        id: node
+        run: echo "::set-output name=version::$(cat .nvmrc)"
+      - name: Set up node
+        uses: actions/setup-node@v2.4.1
+        with:
+          node-version: ${{steps.node.outputs.version}}
+          cache: npm
+      - name: Install packages
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm ci
+      - name: Run build
+        run: npm run build
+      - name: Release
+        run: npx semantic-release
+        env:
+          GITHUB_TOKEN: ${{secrets.PERSONAL_GITHUB_TOKEN}}
+          NPM_TOKEN: ${{secrets.NPM_TOKEN}}
