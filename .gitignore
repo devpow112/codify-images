@@ -1,0 +1,7 @@
+.nyc_output/
+.vscode/
+coverage/
+dist/
+generated/
+node_modules/
+debug.log
