@@ -16,6 +16,55 @@ Quick and easy tool for converting a set of images into inline JavaScript.
 npm i -D codify-images
 ```
 
+## Usage
+
+There are 2 uses of this package either as a library or a command line interface
+(CLI).
+
+### Library
+
+An example of typical usage as a library can be found below.
+
+```js
+import { codifyImages, codifyImagesSync } from 'codify-images';
+
+const images = await codifyImages('path/to/assets'); // asynchronous
+const images = codifyImagesSync('path/to/assets'); // synchronous
+```
+
+The `images` object returned will have a member for each file, of supported
+type, found at the location `path/to/assets` formatted as camel case. Assuming
+`path/to/assets` has 3 files in that location (`test.gif`, `test.png` and
+`test.svg`) the resulting `images` would look like the following.
+
+```js
+const images = {
+  testGif: 'data:image/gif;base64,...',
+  testPng: 'data:image/png;base64,...',
+  testSvg: 'data:image/svg+xml,...'
+};
+```
+
+### CLI
+
+Below is the output of `codify-images --help`.
+
+```sh
+Usage: codify-images [options] <input path>
+
+Arguments:
+  input path                  path to where image files reside
+
+Options:
+  -V, --version               output the version number
+  -f, --force-base64          force all image output to be base64 encoded (default: false)
+  -o, --output <path>         path to write generated files (default: "generated")
+  -e, --es <version>          ESM version to generate (default: 6)
+  -c, --indent-count <count>  number of indent elements to output (default: 1)
+  -t, --indent-type <type>    type of indent to output (choices: "tab", "space", default: "tab")
+  -h, --help                  display help for command
+```
+
 ## Development
 
 Development can be done on any machine that can install **Node.js**.
