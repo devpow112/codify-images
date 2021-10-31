@@ -1,7 +1,7 @@
 {
   "name": "codify-images",
   "version": "1.0.1",
-  "description": "Convert directory of images to encoded JavaScript variables",
+  "description": "Quick and easy tool for converting a set of images into inline JavaScript",
   "main": "dist/index.js",
   "bin": {
     "codify-images": "./dist/cli.js"
