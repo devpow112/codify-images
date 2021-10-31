@@ -28,8 +28,14 @@ An example of typical usage as a library can be found below.
 ```js
 import { codifyImages, codifyImagesSync } from 'codify-images';
 
-const images = await codifyImages('path/to/assets'); // asynchronous
-const images = codifyImagesSync('path/to/assets'); // synchronous
+const options = {
+  forceBase64: false,
+  ignoreUnsupportedTypes: true,
+  log: (name, path) => {...}
+};
+let images = await codifyImages('path/to/assets', options); // asynchronous
+
+images = codifyImagesSync('path/to/assets', options); // synchronous
 ```
 
 The `images` object returned will have a member for each file, of supported
@@ -44,6 +50,17 @@ const images = {
   testSvg: 'data:image/svg+xml,...'
 };
 ```
+
+#### Options
+
+* `forceBase64`: This will force all image types to output as `base64` encoded
+  strings. This only really effects the output of SVG files as they are not
+  `base64` encoded by default. The default for this setting is `false.
+* `ignoreUnsupportedTypes`: This will allow files of unsupported types to be
+  simply skipped instead of throwing an `UnsupportedTypeError` error. The
+  default for this setting is `true`.
+* `log`: This allows you to add a custom logger that will be called after each
+  file is processed. The callback provides the arguments `name` and `path`.
 
 ### CLI
 
