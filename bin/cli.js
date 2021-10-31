@@ -64,7 +64,10 @@ const generate = options => {
   logStart(yellow(`generating exports (${options.input}) ...`));
 
   let output = generateStart(options);
-  const images = codifyImagesSync(options.input, { log: logProcessed });
+  const images = codifyImagesSync(
+    options.input,
+    { log: logProcessed, forceBase64: options.forceBase64 }
+  );
 
   if (images.length === 0) {
     throw new Error('no images available at input path.');
@@ -135,6 +138,11 @@ const main = () => {
           throw new InvalidArgumentError('Must exist.');
         }
       }
+    )
+    .option(
+      '-f, --force-base64 ',
+      'force all image output to be base64 encoded',
+      false
     )
     .option(
       '-o, --output <path>',
