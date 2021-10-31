@@ -41,7 +41,6 @@ jobs:
           node-version: ${{steps.node.outputs.version}}
           cache: npm
       - name: Install packages
-        if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
       - name: Run build
         run: npm run build
