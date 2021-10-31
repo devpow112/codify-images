@@ -1,4 +1,5 @@
-import { basename, extname, resolve as resolvePath } from 'path';
+import { basename, extname, join, resolve as resolvePath } from 'path';
+import { InvalidPathError, UnsupportedTypeError } from './errors.js';
 import { readdirSync, readFileSync } from 'fs';
 import camelCase from 'lodash.camelcase';
 import svgToMiniDataURI from 'mini-svg-data-uri';
@@ -18,7 +19,7 @@ const isObject = value => {
 };
 
 const getFormat = (isSvg, options) => {
-  return isSvg && options?.forceBase64 !== true ? 'utf-8' : 'base64';
+  return isSvg && options.forceBase64 !== true ? 'utf-8' : 'base64';
 };
 
 const sanitizeFileData = data => {
@@ -26,13 +27,13 @@ const sanitizeFileData = data => {
 };
 
 const buildDataUri = (isSvg, source, mime, format, options) => {
-  return isSvg && options?.forceBase64 !== true ?
+  return isSvg && options.forceBase64 !== true ?
     svgToMiniDataURI(source).replace(/'/g, '"') :
     `data:${mime};${format},${source}`;
 };
 
-const isSupported = (file, extension) => {
-  return extension !== file && supportedMimeTypes[extension] !== undefined;
+const isSupported = extension => {
+  return supportedMimeTypes[extension] !== undefined;
 };
 
 const getImageDataUri = (path, mime, isSvg, options) => {
@@ -42,15 +43,14 @@ const getImageDataUri = (path, mime, isSvg, options) => {
   return buildDataUri(isSvg, source, mime, format, options);
 };
 
-const processFile = (path, file, extension, options) => {
+const processFile = (path, extension, options) => {
   const mime = supportedMimeTypes[extension];
   const isSvg = mime === supportedMimeTypes[svgExtension];
-  const filePath = resolvePath(path, file);
 
   return {
-    path: filePath,
-    name: camelCase(basename(file)),
-    data: getImageDataUri(filePath, mime, isSvg, options)
+    path,
+    name: camelCase(basename(path)),
+    data: getImageDataUri(path, mime, isSvg, options)
   };
 };
 
@@ -58,36 +58,59 @@ const processFiles = (path, files, options) => {
   const images = {};
 
   for (const file of files) {
-    const extension = extname(file);
+    const filePath = join(path, file);
+    const extension = extname(filePath);
 
-    if (!isSupported(file, extension)) {
-      continue;
+    if (!isSupported(extension)) {
+      if (options.ignoreUnsupportedTypes === true) {
+        continue;
+      } else {
+        throw new UnsupportedTypeError(extension);
+      }
     }
 
-    const image = processFile(path, file, extension, options);
+    const image = processFile(filePath, extension, options);
 
     images[image.name] = image.data;
 
-    options?.log?.(image);
+    options.log?.(image.path, image.name);
   }
 
   return images;
 };
 
-export const codifyImagesSync = (path, options = {}) => {
+const hasObjectProperty = (options, property) => {
+  return Object.prototype.hasOwnProperty.call(options, property);
+};
+
+const sanitizeOptions = options => {
   if (!isObject(options)) {
-    options = null;
+    options = {};
   }
 
-  const files = readdirSync(path);
+  if (!hasObjectProperty(options, 'ignoreUnsupportedTypes')) {
+    options.ignoreUnsupportedTypes = true;
+  }
 
-  return processFiles(path, files, options);
+  return options;
+};
+
+export const codifyImagesSync = (path, options = {}) => {
+  let files;
+
+  try {
+    files = readdirSync(resolvePath(path));
+  } catch (_) {
+    throw new InvalidPathError(path);
+  }
+
+  return processFiles(path, files, sanitizeOptions(options));
 };
 
 export const codifyImages = (path, options = {}) => {
   return new Promise((resolve, reject) => {
     try {
-      resolve(codifyImagesSync(path, options));
+      resolve(codifyImagesSync(path, sanitizeOptions(options)));
     } catch (err) {
       reject(err);
     }
