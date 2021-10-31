@@ -12,7 +12,7 @@ const generateStart = options => {
 };
 
 const generateLine = (name, data, options) => {
-  const adjustedData = `'${data.replace(/'/g, '\\\'')}'`;
+  const adjustedData = `'${data}'`;
   const indentType = options.indentType === 'tab' ? '\t' : ' ';
   const indent = indentType.repeat(options.indentCount);
 

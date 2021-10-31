@@ -26,7 +26,9 @@ const sanitizeFileData = data => {
 };
 
 const buildDataUri = (isSvg, source, mime, format) => {
-  return isSvg ? svgToMiniDataURI(source) : `data:${mime};${format},${source}`;
+  return isSvg ?
+    svgToMiniDataURI(source).replace(/'/g, '"') :
+    `data:${mime};${format},${source}`;
 };
 
 const isSupported = (file, extension) => {
