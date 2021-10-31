@@ -1,6 +1,6 @@
 {
   "name": "codify-images",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Convert directory of images to encoded JavaScript variables",
   "main": "dist/index.js",
   "bin": {
