@@ -17,16 +17,16 @@ const isObject = value => {
   return Object.prototype.toString.call(value) === '[object Object]';
 };
 
-const getFormat = isSvg => {
-  return isSvg ? 'utf-8' : 'base64';
+const getFormat = (isSvg, options) => {
+  return isSvg && options?.forceBase64 !== true ? 'utf-8' : 'base64';
 };
 
 const sanitizeFileData = data => {
   return data.replace(/[\r\n]+/gm, '');
 };
 
-const buildDataUri = (isSvg, source, mime, format) => {
-  return isSvg ?
+const buildDataUri = (isSvg, source, mime, format, options) => {
+  return isSvg && options?.forceBase64 !== true ?
     svgToMiniDataURI(source).replace(/'/g, '"') :
     `data:${mime};${format},${source}`;
 };
@@ -35,14 +35,14 @@ const isSupported = (file, extension) => {
   return extension !== file && supportedMimeTypes[extension] !== undefined;
 };
 
-const getImageDataUri = (path, mime, isSvg) => {
-  const format = getFormat(isSvg);
+const getImageDataUri = (path, mime, isSvg, options) => {
+  const format = getFormat(isSvg, options);
   const source = sanitizeFileData(readFileSync(path, format));
 
-  return buildDataUri(isSvg, source, mime, format);
+  return buildDataUri(isSvg, source, mime, format, options);
 };
 
-const processFile = (path, file, extension) => {
+const processFile = (path, file, extension, options) => {
   const mime = supportedMimeTypes[extension];
   const isSvg = mime === supportedMimeTypes[svgExtension];
   const filePath = resolvePath(path, file);
@@ -50,7 +50,7 @@ const processFile = (path, file, extension) => {
   return {
     path: filePath,
     name: camelCase(basename(file)),
-    data: getImageDataUri(filePath, mime, isSvg)
+    data: getImageDataUri(filePath, mime, isSvg, options)
   };
 };
 
@@ -64,7 +64,7 @@ const processFiles = (path, files, options) => {
       continue;
     }
 
-    const image = processFile(path, file, extension);
+    const image = processFile(path, file, extension, options);
 
     images[image.name] = image.data;
 
@@ -76,7 +76,7 @@ const processFiles = (path, files, options) => {
 
 export const codifyImagesSync = (path, options = {}) => {
   if (!isObject(options)) {
-    options = {};
+    options = null;
   }
 
   const files = readdirSync(path);
