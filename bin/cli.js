@@ -12,13 +12,14 @@ const generateStart = options => {
 };
 
 const generateLine = (name, data, options) => {
-  const adjustedData = `'${data}'`;
+  const adjustedData = data.replace(/'/g, '\\\'');
+  const quotedData = `'${adjustedData}'`;
   const indentType = options.indentType === 'tab' ? '\t' : ' ';
   const indent = indentType.repeat(options.indentCount);
 
   return options.es === 6 ?
-    `export const ${name} = ${adjustedData};` :
-    `${indent}${name}: ${adjustedData}`;
+    `export const ${name} = ${quotedData};` :
+    `${indent}${name}: ${quotedData}`;
 };
 
 const generateLineEnding = (options, last) => {
