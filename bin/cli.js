@@ -144,7 +144,7 @@ const main = () => {
     .option(
       '-f, --force-base64',
       'force all image output to be base64 encoded',
-      false
+      true
     )
     .option(
       '-d, --double-quotes',
