@@ -29,7 +29,7 @@ An example of typical usage as a library can be found below.
 import { codifyImages, codifyImagesSync } from 'codify-images';
 
 const options = {
-  forceBase64: false,
+  svgDisableBase64: false,
   ignoreUnsupportedTypes: true,
   log: (name, path) => {...}
 };
@@ -47,15 +47,15 @@ type, found at the location `path/to/assets` formatted as camel case. Assuming
 const images = {
   testGif: 'data:image/gif;base64,...',
   testPng: 'data:image/png;base64,...',
-  testSvg: 'data:image/svg+xml,...'
+  testSvg: 'data:image/svg+xml;base64,...'
 };
 ```
 
 #### Options
 
-* `forceBase64`: This will force all image types to output as `base64` encoded
-  strings. This only really effects the output of SVG files as they are not
-  `base64` encoded by default. The default for this setting is `false.
+* `svgDisableBase64`: This will disable `base64` encoding of SVG images. It is
+  recommended to leave `base64` encoding of SVG images on as it increases
+  compatibility with certain use cases. The default for this setting is `false`.
 * `ignoreUnsupportedTypes`: This will allow files of unsupported types to be
   simply skipped instead of throwing an `UnsupportedTypeError` error. The
   default for this setting is `true`.
@@ -74,7 +74,8 @@ Arguments:
 
 Options:
   -V, --version               output the version number
-  -f, --force-base64          force all image output to be base64 encoded (default: false)
+  -s, --svg-disable-base64    This will allow SVG images to be output as not base64 (default: false)
+  -d, --double-quotes         Use double quotes for output instead of single quotes (default: false)
   -o, --output <path>         path to write generated files (default: "generated")
   -e, --es <version>          ESM version to generate (default: 6)
   -c, --indent-count <count>  number of indent elements to output (default: 1)

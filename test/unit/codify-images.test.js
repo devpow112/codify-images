@@ -6,24 +6,20 @@ import { join } from 'path';
 import { spy } from 'sinon';
 
 const assetsPath = join(__dirname, '../assets/');
-const expectedKeys = Object.keys(expectedImages).filter(e => e !== 'testSvg64');
+const expectedKeys = Object
+  .keys(expectedImages)
+  .filter(e => e !== 'testSvgNotBase64');
 const invalidAssetPath = 'not a path';
 const invalidOptions = 'not options';
 
-const verifyImages = (images, forceBase64) => {
+const verifyImages = (images, svgDisableBase64) => {
   expect(images).to.be.instanceOf(Object);
   expect(Object.keys(images).length).to.eql(expectedKeys.length);
 
-  if (forceBase64 === true) {
-    for (const expectedKey of expectedKeys) {
-      if (expectedKey === 'testSvg') {
-        expect(images[expectedKey]).to.eql(expectedImages.testSvg64);
-      } else {
-        expect(images[expectedKey]).to.eql(expectedImages[expectedKey]);
-      }
-    }
-  } else {
-    for (const expectedKey of expectedKeys) {
+  for (const expectedKey of expectedKeys) {
+    if (expectedKey === 'testSvg' && svgDisableBase64 === true) {
+      expect(images[expectedKey]).to.eql(expectedImages.testSvgNotBase64);
+    } else {
       expect(images[expectedKey]).to.eql(expectedImages[expectedKey]);
     }
   }
@@ -42,8 +38,11 @@ describe('codify-images', () => {
       expect(log.callCount).to.eql(expectedKeys.length);
     });
 
-    it('force base64', async () => {
-      verifyImages(await codifyImages(assetsPath, { forceBase64: true }), true);
+    it('disable base64', async () => {
+      verifyImages(
+        await codifyImages(assetsPath, { svgDisableBase64: true }),
+        true
+      );
     });
 
     it('handles invalid options', async () => {
@@ -54,7 +53,6 @@ describe('codify-images', () => {
       try {
         await codifyImages(invalidAssetPath);
       } catch (err) {
-        console.log(err);
         expect(err).to.be.instanceOf(InvalidPathError);
 
         return;
@@ -88,8 +86,11 @@ describe('codify-images', () => {
       expect(log.callCount).to.eql(expectedKeys.length);
     });
 
-    it('force base64', () => {
-      verifyImages(codifyImagesSync(assetsPath, { forceBase64: true }), true);
+    it('disable base64', () => {
+      verifyImages(
+        codifyImagesSync(assetsPath, { svgDisableBase64: true }),
+        true
+      );
     });
 
     it('handles invalid options', () => {
