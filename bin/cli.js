@@ -12,14 +12,15 @@ const generateStart = options => {
 };
 
 const generateLine = (name, data, options) => {
-  const adjustedData = data.replace(/'/g, '\\\'');
-  const quotedData = `'${adjustedData}'`;
+  const adjustedData = options.doubleQuotes !== true ?
+    `'${data.replace(/'/g, '\\\'')}'` :
+    `"${data}"`;
   const indentType = options.indentType === 'tab' ? '\t' : ' ';
   const indent = indentType.repeat(options.indentCount);
 
   return options.es === 6 ?
-    `export const ${name} = ${quotedData};` :
-    `${indent}${name}: ${quotedData}`;
+    `export const ${name} = ${adjustedData};` :
+    `${indent}${name}: ${adjustedData}`;
 };
 
 const generateLineEnding = (options, last) => {
@@ -141,8 +142,13 @@ const main = () => {
       }
     )
     .option(
-      '-f, --force-base64 ',
+      '-f, --force-base64',
       'force all image output to be base64 encoded',
+      false
+    )
+    .option(
+      '-d, --double-quotes',
+      'Use double quotes for output instead of single quotes',
       false
     )
     .option(
