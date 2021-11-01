@@ -68,7 +68,7 @@ const generate = options => {
   let output = generateStart(options);
   const images = codifyImagesSync(
     options.input,
-    { log: logProcessed, forceBase64: options.forceBase64 }
+    { log: logProcessed, svgDisableBase64: options.svgDisableBase64 }
   );
 
   if (images.length === 0) {
@@ -142,8 +142,8 @@ const main = () => {
       }
     )
     .option(
-      '-f, --force-base64',
-      'force all image output to be base64 encoded',
+      '-s, --svg-disable-base64',
+      'This will allow SVG images to be output as not base64',
       false
     )
     .option(

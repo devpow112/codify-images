@@ -19,7 +19,7 @@ const isObject = value => {
 };
 
 const getFormat = (isSvg, options) => {
-  return isSvg && options.forceBase64 !== true ? 'utf-8' : 'base64';
+  return isSvg && options.svgDisableBase64 === true ? 'utf-8' : 'base64';
 };
 
 const sanitizeFileData = data => {
@@ -27,7 +27,7 @@ const sanitizeFileData = data => {
 };
 
 const buildDataUri = (isSvg, source, mime, format, options) => {
-  return isSvg && options.forceBase64 !== true ?
+  return isSvg && options.svgDisableBase64 === true ?
     svgToMiniDataURI(source) :
     `data:${mime};${format},${source}`;
 };
@@ -90,6 +90,10 @@ const sanitizeOptions = options => {
 
   if (!hasObjectProperty(options, 'ignoreUnsupportedTypes')) {
     options.ignoreUnsupportedTypes = true;
+  }
+
+  if (!hasObjectProperty(options, 'svgDisableBase64')) {
+    options.svgDisableBase64 = false;
   }
 
   return options;
