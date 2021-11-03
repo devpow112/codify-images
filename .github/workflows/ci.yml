@@ -13,7 +13,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.3.5
+        uses: actions/checkout@v2.4.0
         with:
           fetch-depth: 0
       - name: Get node version
@@ -38,7 +38,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.3.5
+        uses: actions/checkout@v2.4.0
       - name: Get node version
         id: node
         run: echo "::set-output name=version::$(cat .nvmrc)"
@@ -63,7 +63,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.3.5
+        uses: actions/checkout@v2.4.0
       - name: Get node version
         id: node
         run: echo "::set-output name=version::$(cat .nvmrc)"
@@ -84,7 +84,7 @@ jobs:
       security-events: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.3.5
+        uses: actions/checkout@v2.4.0
       - name: Set up CodeQL
         uses: github/codeql-action/init@v1
         with:
