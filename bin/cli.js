@@ -68,7 +68,7 @@ const generate = options => {
   let output = generateStart(options);
   const images = codifyImagesSync(
     options.input,
-    { log: logProcessed, svgDisableBase64: options.svgDisableBase64 }
+    { log: logProcessed, svgMode: options.svgMode }
   );
 
   if (images.length === 0) {
@@ -142,11 +142,6 @@ const main = () => {
       }
     )
     .option(
-      '-s, --svg-disable-base64',
-      'This will allow SVG images to be output as not base64',
-      false
-    )
-    .option(
       '-d, --double-quotes',
       'Use double quotes for output instead of single quotes',
       false
@@ -159,7 +154,7 @@ const main = () => {
     )
     .option(
       '-e, --es <version>',
-      'ESM version to generate',
+      'version of ESM to generate',
       value => {
         const parsedValue = customParseInt(value, 10);
         const choicesEs = [5, 6];
@@ -184,6 +179,11 @@ const main = () => {
       new Option('-t, --indent-type <type>', 'type of indent to output')
         .choices(['tab', 'space'])
         .default('tab')
+    )
+    .addOption(
+      new Option('-s, --svg-mode <mode>', 'output mode to use for SVG images')
+        .choices(['base64', 'uri', 'mini', 'mini-srcset'])
+        .default('base64')
     )
     .action((_, opts) => {
       if (opts.output === 'generated') {

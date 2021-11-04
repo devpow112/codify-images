@@ -1,8 +1,10 @@
+import * as errors from './errors.js';
 import { basename, extname, join, resolve as resolvePath } from 'path';
-import { InvalidPathError, UnsupportedTypeError } from './errors.js';
 import { readdirSync, readFileSync } from 'fs';
 import camelCase from 'lodash.camelcase';
 import svgToMiniDataURI from 'mini-svg-data-uri';
+
+const { InvalidPathError, InvalidSvgModeError, UnsupportedTypeError } = errors;
 
 const svgExtension = '.svg';
 const supportedMimeTypes = {
@@ -13,23 +15,45 @@ const supportedMimeTypes = {
   '.webp': 'image/webp',
   '.svg': 'image/svg+xml'
 };
+const svgModes = ['base64', 'uri', 'mini', 'mini-srcset'];
 
 const isObject = value => {
   return Object.prototype.toString.call(value) === '[object Object]';
 };
 
-const getFormat = (isSvg, options) => {
-  return isSvg && options.svgDisableBase64 === true ? 'utf-8' : 'base64';
+const getEncoding = (isSvg, options) => {
+  if (isSvg) {
+    return options.svgMode;
+  }
+
+  return 'base64';
+};
+
+const getFormat = encoding => {
+  switch (encoding) {
+    case 'mini':
+    case 'mini-srcset':
+    case 'uri':
+      return 'utf-8';
+    default:
+      return 'base64';
+  }
 };
 
 const sanitizeFileData = data => {
   return data.replace(/[\r\n]+/gm, '');
 };
 
-const buildDataUri = (isSvg, source, mime, format, options) => {
-  return isSvg && options.svgDisableBase64 === true ?
-    svgToMiniDataURI(source) :
-    `data:${mime};${format},${source}`;
+const buildDataUri = (source, mime, encoding) => {
+  if (encoding === 'uri') {
+    return `data:${mime};${encodeURIComponent(source)}`;
+  } else if (encoding === 'mini') {
+    return svgToMiniDataURI(source);
+  } else if (encoding === 'mini-srcset') {
+    return svgToMiniDataURI.toSrcset(source);
+  }
+
+  return `data:${mime};${encoding},${source}`;
 };
 
 const isSupported = extension => {
@@ -37,10 +61,11 @@ const isSupported = extension => {
 };
 
 const getImageDataUri = (path, mime, isSvg, options) => {
-  const format = getFormat(isSvg, options);
+  const encoding = getEncoding(isSvg, options);
+  const format = getFormat(encoding);
   const source = sanitizeFileData(readFileSync(path, format));
 
-  return buildDataUri(isSvg, source, mime, format, options);
+  return buildDataUri(source, mime, encoding);
 };
 
 const processFile = (path, extension, options) => {
@@ -90,10 +115,14 @@ const sanitizeOptions = options => {
 
   if (!hasObjectProperty(options, 'ignoreUnsupportedTypes')) {
     options.ignoreUnsupportedTypes = true;
+  } else {
+    options.ignoreUnsupportedTypes = options.ignoreUnsupportedTypes === true;
   }
 
-  if (!hasObjectProperty(options, 'svgDisableBase64')) {
-    options.svgDisableBase64 = false;
+  if (!hasObjectProperty(options, 'svgMode')) {
+    options.svgMode = 'base64';
+  } else if (!svgModes.includes(options.svgMode)) {
+    throw new InvalidSvgModeError(options.svgMode);
   }
 
   return options;
