@@ -1,24 +1,40 @@
+import * as errors from '../../src/errors.js';
 import * as expectedImages from '../assets/images.js';
 import { codifyImages, codifyImagesSync } from '../../src/';
-import { InvalidPathError, UnsupportedTypeError } from '../../src/errors.js';
 import { expect } from 'chai';
 import { join } from 'path';
 import { spy } from 'sinon';
 
+const { InvalidPathError, InvalidSvgModeError, UnsupportedTypeError } = errors;
 const assetsPath = join(__dirname, '../assets/');
-const expectedKeys = Object
-  .keys(expectedImages)
-  .filter(e => e !== 'testSvgNotBase64');
+const svgModes = ['base64', 'uri', 'mini', 'mini-srcset'];
+const excludeKeys = [
+  'testSvgBase64',
+  'testSvgUri',
+  'testSvgMini',
+  'testSvgMiniSrcset'
+];
+const expectedKeys = [...Object.keys(expectedImages), 'testSvg'].filter(
+  e => !excludeKeys.includes(e)
+);
 const invalidAssetPath = 'not a path';
 const invalidOptions = 'not options';
 
-const verifyImages = (images, svgDisableBase64) => {
+const verifyImages = (images, svgMode) => {
   expect(images).to.be.instanceOf(Object);
   expect(Object.keys(images).length).to.eql(expectedKeys.length);
 
   for (const expectedKey of expectedKeys) {
-    if (expectedKey === 'testSvg' && svgDisableBase64 === true) {
-      expect(images[expectedKey]).to.eql(expectedImages.testSvgNotBase64);
+    if (expectedKey === 'testSvg') {
+      if (svgMode === 'uri') {
+        expect(images[expectedKey]).to.eql(expectedImages.testSvgUri);
+      } else if (svgMode === 'mini') {
+        expect(images[expectedKey]).to.eql(expectedImages.testSvgMini);
+      } else if (svgMode === 'mini-srcset') {
+        expect(images[expectedKey]).to.eql(expectedImages.testSvgMiniSrcset);
+      } else {
+        expect(images[expectedKey]).to.eql(expectedImages.testSvgBase64);
+      }
     } else {
       expect(images[expectedKey]).to.eql(expectedImages[expectedKey]);
     }
@@ -27,8 +43,54 @@ const verifyImages = (images, svgDisableBase64) => {
 
 describe('codify-images', () => {
   describe('async', () => {
-    it('generates', async () => {
-      verifyImages(await codifyImages(assetsPath));
+    describe('generates with', async () => {
+      it('defaults', async () => {
+        verifyImages(await codifyImages(assetsPath));
+      });
+
+      for (const mode of svgModes) {
+        it(`svg '${mode}'`, async () => {
+          verifyImages(await codifyImages(assetsPath, { svgMode: mode }), mode);
+        });
+      }
+    });
+
+    describe('errors with', () => {
+      it('invalid svg mode', async () => {
+        try {
+          await codifyImages(assetsPath, { svgMode: 'not a mode' });
+        } catch (err) {
+          expect(err).to.be.instanceOf(InvalidSvgModeError);
+
+          return;
+        }
+
+        throw new Error('fail');
+      });
+
+      it('invalid path', async () => {
+        try {
+          await codifyImages(invalidAssetPath);
+        } catch (err) {
+          expect(err).to.be.instanceOf(InvalidPathError);
+
+          return;
+        }
+
+        throw new Error('fail');
+      });
+
+      it('unsupported type', async () => {
+        try {
+          await codifyImages(assetsPath, { ignoreUnsupportedTypes: false });
+        } catch (err) {
+          expect(err).to.be.instanceOf(UnsupportedTypeError);
+
+          return;
+        }
+
+        throw new Error('fail');
+      });
     });
 
     it('will log', async () => {
@@ -38,45 +100,60 @@ describe('codify-images', () => {
       expect(log.callCount).to.eql(expectedKeys.length);
     });
 
-    it('disable base64', async () => {
-      verifyImages(
-        await codifyImages(assetsPath, { svgDisableBase64: true }),
-        true
-      );
-    });
-
     it('handles invalid options', async () => {
       verifyImages(await codifyImages(assetsPath, invalidOptions));
-    });
-
-    it('fails with invalid path', async () => {
-      try {
-        await codifyImages(invalidAssetPath);
-      } catch (err) {
-        expect(err).to.be.instanceOf(InvalidPathError);
-
-        return;
-      }
-
-      throw new Error('fail');
-    });
-
-    it('fails with unsupported type', async () => {
-      try {
-        await codifyImages(assetsPath, { ignoreUnsupportedTypes: false });
-      } catch (err) {
-        expect(err).to.be.instanceOf(UnsupportedTypeError);
-
-        return;
-      }
-
-      throw new Error('fail');
     });
   });
 
   describe('sync', () => {
-    it('generates', () => {
-      verifyImages(codifyImagesSync(assetsPath));
+    describe('generates with', () => {
+      it('defaults', () => {
+        verifyImages(codifyImagesSync(assetsPath));
+      });
+
+      for (const mode of svgModes) {
+        it(`svg '${mode}'`, () => {
+          verifyImages(codifyImagesSync(assetsPath, { svgMode: mode }), mode);
+        });
+      }
+    });
+
+    describe('errors with', () => {
+      it('invalid svg mode', () => {
+        try {
+          codifyImagesSync(assetsPath, { svgMode: 'not a mode' });
+        } catch (err) {
+          expect(err).to.be.instanceOf(InvalidSvgModeError);
+
+          return;
+        }
+
+        throw new Error('fail');
+      });
+
+      it('invalid path', () => {
+        try {
+          codifyImagesSync(invalidAssetPath);
+        } catch (err) {
+          expect(err).to.be.instanceOf(InvalidPathError);
+
+          return;
+        }
+
+        throw new Error('fail');
+      });
+
+      it('unsupported type', () => {
+        try {
+          codifyImagesSync(assetsPath, { ignoreUnsupportedTypes: false });
+        } catch (err) {
+          expect(err).to.be.instanceOf(UnsupportedTypeError);
+
+          return;
+        }
+
+        throw new Error('fail');
+      });
     });
 
     it('will log', () => {
@@ -86,39 +163,8 @@ describe('codify-images', () => {
       expect(log.callCount).to.eql(expectedKeys.length);
     });
 
-    it('disable base64', () => {
-      verifyImages(
-        codifyImagesSync(assetsPath, { svgDisableBase64: true }),
-        true
-      );
-    });
-
     it('handles invalid options', () => {
       verifyImages(codifyImagesSync(assetsPath, invalidOptions));
-    });
-
-    it('fails with invalid path', () => {
-      try {
-        codifyImagesSync(invalidAssetPath);
-      } catch (err) {
-        expect(err).to.be.instanceOf(InvalidPathError);
-
-        return;
-      }
-
-      throw new Error('fail');
-    });
-
-    it('fails with unsupported type', () => {
-      try {
-        codifyImagesSync(assetsPath, { ignoreUnsupportedTypes: false });
-      } catch (err) {
-        expect(err).to.be.instanceOf(UnsupportedTypeError);
-
-        return;
-      }
-
-      throw new Error('fail');
     });
   });
 });

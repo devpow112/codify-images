@@ -30,3 +30,13 @@ export class InvalidPathError extends CodifyError {
     this.name = this.constructor.name;
   }
 }
+
+export class InvalidSvgModeError extends CodifyError {
+  constructor(mode) {
+    super(`SVG mode '${mode}' is not a valid mode`, 'invalidSvgModeError');
+
+    Error.captureStackTrace(this, this.constructor);
+
+    this.name = this.constructor.name;
+  }
+}

@@ -12,7 +12,7 @@ Quick and easy tool for converting a set of images into inline JavaScript.
 
 ## Installation
 
-```bash
+```sh
 npm i -D codify-images
 ```
 
@@ -29,7 +29,7 @@ An example of typical usage as a library can be found below.
 import { codifyImages, codifyImagesSync } from 'codify-images';
 
 const options = {
-  svgDisableBase64: false,
+  svgMode: 'base64',
   ignoreUnsupportedTypes: true,
   log: (name, path) => {...}
 };
@@ -53,9 +53,12 @@ const images = {
 
 #### Options
 
-* `svgDisableBase64`: This will disable `base64` encoding of SVG images. It is
-  recommended to leave `base64` encoding of SVG images on as it increases
-  compatibility with certain use cases. The default for this setting is `false`.
+* `svgMode`: Allows you to supply the `mode` that will be used to generate SVG
+  outputs. The current options are `base64`, `uri`, `mini`, `mini-srcset`. The
+  default for this setting is `base64` and is the recommended setting as it has
+  the highest compatibility with different use cases. For more info related to
+  the `mini` and `mini-srcset` modes please consult the [Mini SVG Data] package
+  documentation.
 * `ignoreUnsupportedTypes`: This will allow files of unsupported types to be
   simply skipped instead of throwing an `UnsupportedTypeError` error. The
   default for this setting is `true`.
@@ -74,12 +77,12 @@ Arguments:
 
 Options:
   -V, --version               output the version number
-  -s, --svg-disable-base64    This will allow SVG images to be output as not base64 (default: false)
   -d, --double-quotes         Use double quotes for output instead of single quotes (default: false)
   -o, --output <path>         path to write generated files (default: "generated")
-  -e, --es <version>          ESM version to generate (default: 6)
+  -e, --es <version>          version of ESM to generate (default: 6)
   -c, --indent-count <count>  number of indent elements to output (default: 1)
   -t, --indent-type <type>    type of indent to output (choices: "tab", "space", default: "tab")
+  -s, --svg-mode <mode>       output mode to use for SVG images (choices: "base64", "uri", "mini", "mini-srcset", default: "base64")
   -h, --help                  display help for command
 ```
 
@@ -92,7 +95,7 @@ latest LTS version is tested against.
 
 Install dependencies via `npm`.
 
-```bash
+```sh
 npm i
 ```
 
@@ -100,7 +103,7 @@ npm i
 
 Execute linters via `npm`.
 
-```bash
+```sh
 # git, javascript and markdown
 npm run lint
 
@@ -118,7 +121,7 @@ npm run lint:md
 
 Execute tests via `npm`.
 
-```bash
+```sh
 # lint and unit tests
 npm test
 
@@ -130,7 +133,7 @@ npm run test:unit
 
 Execute formatters via `npm`.
 
-```bash
+```sh
 # javascript and markdown
 npm run format
 
@@ -145,7 +148,7 @@ npm run format:md
 
 Run a build via `npm`.
 
-```bash
+```sh
 npm run build
 ```
 
@@ -162,3 +165,4 @@ npm run build
 [Coverage Report]: https://coveralls.io/github/devpow112/codify-images?branch=main
 [Vulnerabilities Badge]: https://img.shields.io/snyk/vulnerabilities/github/devpow112/codify-images?label=Vulnerabilities
 [Vulnerabilities Report]: https://snyk.io/test/github/devpow112/codify-images
+[Mini SVG Data]: https://www.npmjs.com/package/mini-svg-data-uri
