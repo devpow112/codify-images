@@ -82,7 +82,8 @@ Options:
   -e, --es <version>          version of ESM to generate (default: 6)
   -c, --indent-count <count>  number of indent elements to output (default: 1)
   -t, --indent-type <type>    type of indent to output (choices: "tab", "space", default: "tab")
-  -s, --svg-mode <mode>       output mode to use for SVG images (choices: "base64", "uri", "mini", "mini-srcset", default: "base64")
+  -s, --svg-mode <mode>       output mode to use for SVG images
+                              (choices: "base64", "uri", "mini", "mini-srcset", default: "base64")
   -h, --help                  display help for command
 ```
 
