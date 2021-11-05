@@ -1,7 +1,5 @@
 name: Release
 on:
-  schedule:
-    - cron: '0 19 * * *'
   workflow_run:
     workflows: CI
     types: completed
@@ -15,18 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     if: >
-      (
-        github.event_name == 'schedule' &&
-        !startsWith(github.event.head_commit.message, 'chore(release):') &&
-        !startsWith(github.event.head_commit.message, 'chore(license):') &&
-        !startsWith(github.event.head_commit.message, 'chore(node):')
-      ) || (
-        github.event_name == 'workflow_run' &&
-        github.event.workflow_run.conclusion == 'success' && (
-          startsWith(github.event.workflow_run.head_commit.message, 'fix') ||
-          startsWith(github.event.workflow_run.head_commit.message, 'Revert')
-        )
-      )
+      github.event_name == 'workflow_run' &&
+      github.event.workflow_run.conclusion == 'success'
     steps:
       - name: Checkout
         uses: actions/checkout@v2.4.0
