@@ -1,0 +1,11 @@
+name: Pull Request
+on:
+  pull_request:
+    branches: main
+permissions:
+  contents: read
+  security-events: write
+jobs:
+  ci:
+    name: CI
+    uses: devpow112/codify-images/.github/workflows/ci.yml@test
