@@ -5,3 +5,4 @@ coverage/
 dist/
 generated/
 node_modules/
+test/integration/.temp/

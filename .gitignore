@@ -1,7 +1,8 @@
 .nyc_output/
 .vscode/
 coverage/
+debug.log
 dist/
 generated/
 node_modules/
-debug.log
+test/integration/.temp/

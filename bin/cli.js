@@ -33,7 +33,7 @@ const generateEnd = options => {
 
 const writeOutput = (outputPath, output, options) => {
   if (!existsSync(options.output)) {
-    mkdirSync(options.output);
+    mkdirSync(options.output, { recursive: true });
   }
 
   writeFileSync(outputPath, output, { encoding: 'utf-8' });

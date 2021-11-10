@@ -22,7 +22,7 @@ const invalidOptions = 'not options';
 
 const verifyImages = (images, svgMode) => {
   expect(images).to.be.instanceOf(Object);
-  expect(Object.keys(images).length).to.eql(expectedKeys.length);
+  expect(images).to.have.deep.keys(expectedKeys);
 
   for (const expectedKey of expectedKeys) {
     if (expectedKey === 'testSvg') {
@@ -43,7 +43,7 @@ const verifyImages = (images, svgMode) => {
 
 describe('codify-images', () => {
   describe('async', () => {
-    describe('generates with', async () => {
+    describe('generates with', () => {
       it('defaults', async () => {
         verifyImages(await codifyImages(assetsPath));
       });
