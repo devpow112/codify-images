@@ -3,8 +3,7 @@ updates:
   - package-ecosystem: github-actions
     directory: /
     schedule:
-      interval: weekly
-      day: monday
+      interval: daily
       time: '04:00'
       timezone: America/Toronto
     rebase-strategy: auto
@@ -12,16 +11,13 @@ updates:
       - auto
       - dependencies
       - github-actions
-    reviewers:
-      - devpow112
     commit-message:
       prefix: build
       include: scope
   - package-ecosystem: npm
     directory: /
     schedule:
-      interval: weekly
-      day: monday
+      interval: daily
       time: '04:00'
       timezone: America/Toronto
     versioning-strategy: increase
@@ -30,8 +26,6 @@ updates:
       - auto
       - dependencies
       - javascript
-    reviewers:
-      - devpow112
     commit-message:
       prefix: chore
       include: scope
