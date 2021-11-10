@@ -41,7 +41,10 @@ const verifyImages = (images, svgMode) => {
   }
 };
 
-describe('codify-images', () => {
+describe('codify-images', function() {
+  this.timeout(50);
+  this.slow(10);
+
   describe('async', () => {
     describe('generates with', () => {
       it('defaults', async () => {

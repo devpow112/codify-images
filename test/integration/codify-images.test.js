@@ -73,7 +73,8 @@ const validate = async (outputPath, esVersion, svgMode) => {
 };
 
 describe('codify-images', function() {
-  this.timeout(1000);
+  this.timeout(500);
+  this.slow(250);
 
   describe('shows', () => {
     it('version', async () => {
