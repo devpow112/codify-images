@@ -1,11 +1,12 @@
-#!/usr/bin/env node
-
-import { blue, green, red, yellow } from 'chalk';
 import { name as cliName, version as cliVersion } from '../package.json';
-import { Command, InvalidArgumentError, Option } from 'commander';
-import { existsSync, mkdirSync, statSync, writeFileSync } from 'fs';
-import { codifyImagesSync } from '../';
+import { InvalidArgumentError, Option } from 'commander';
+import { statSync, writeFileSync } from 'fs';
+import chalk from 'chalk';
+import { codifyImagesSync } from './codify-images.js';
+import { nativeSync as mkdirpSync } from 'mkdirp';
 import { resolve } from 'path';
+
+const { blue, green, red, yellow } = chalk;
 
 const generateStart = options => {
   let output = options.banner === true ? '// auto-generated\n' : '';
@@ -38,10 +39,7 @@ const generateEnd = options => {
 };
 
 const writeOutput = (outputPath, output, options) => {
-  if (!existsSync(options.output)) {
-    mkdirSync(options.output, { recursive: true });
-  }
-
+  mkdirpSync(options.output);
   writeFileSync(outputPath, output, { encoding: 'utf-8' });
 };
 
@@ -55,8 +53,8 @@ const logInfo = message => {
 };
 
 const logError = message => {
-  console.error(`error: ${red(message)}`);
   console.groupEnd();
+  console.log(red(`error: ${message}`));
 };
 
 const logProcessed = (path, name) => {
@@ -77,7 +75,7 @@ const generate = options => {
     { log: logProcessed, svgMode: options.svgMode }
   );
 
-  if (images.length === 0) {
+  if (Object.keys(images).length === 0) {
     throw new Error('no images available at input path.');
   }
 
@@ -113,18 +111,9 @@ const customParseInt = value => {
   return parsedValue;
 };
 
-const customResolve = value => {
-  try {
-    return resolve(value);
-  } catch (_) {
-    throw new InvalidArgumentError('Must be valid.');
-  }
-};
-
-const main = () => {
-  const program = new Command(cliName);
-
+export const setUpProgram = program => {
   program
+    .name(cliName)
     .version(cliVersion)
     .showHelpAfterError()
     .configureOutput({ outputError: (message, write) => write(red(message)) })
@@ -132,9 +121,9 @@ const main = () => {
       '<input path>',
       'path to where image files reside',
       value => {
-        const path = customResolve(value);
 
         try {
+          const path = resolve(value);
           const stat = statSync(path);
 
           if (!stat.isDirectory()) {
@@ -155,14 +144,14 @@ const main = () => {
     .option(
       '-o, --output <path>',
       'path to write generated files',
-      value => customResolve(value),
+      value => resolve(value),
       'generated'
     )
     .option(
       '-e, --es <version>',
       'version of ESM to generate',
       value => {
-        const parsedValue = customParseInt(value, 10);
+        const parsedValue = customParseInt(value);
         const choicesEs = [5, 6];
 
         if (!choicesEs.includes(parsedValue)) {
@@ -178,7 +167,7 @@ const main = () => {
     .option(
       '-c, --indent-count <count>',
       'number of indent elements to output',
-      value => customParseInt(value, 10),
+      value => customParseInt(value),
       1
     )
     .option(
@@ -196,23 +185,17 @@ const main = () => {
         .choices(['base64', 'uri', 'mini', 'mini-srcset'])
         .default('base64')
     )
-    .action((_, opts) => {
+    .action((input, opts) => {
       if (opts.output === 'generated') {
         opts.output = resolve(opts.output);
       }
-    })
-    .parse(process.argv);
 
-  const programOptions = program.opts();
-  const programArguments = program.processedArgs;
-  const options = { input: programArguments[0], ...programOptions };
+      try {
+        generate({ input, ...opts });
+      } catch (err) {
+        logError(err.message);
 
-  generate(options);
+        throw err;
+      }
+    });
 };
-
-try {
-  main();
-} catch (err) {
-  logError(err);
-  process.exit(1);
-}

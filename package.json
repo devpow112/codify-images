@@ -2,12 +2,13 @@
   "name": "codify-images",
   "version": "1.4.0",
   "description": "Quick and easy tool for converting a set of images into inline JavaScript",
-  "main": "dist/index.js",
+  "main": "dist/codify-images.js",
   "bin": {
-    "codify-images": "./dist/cli.js"
+    "codify-images": "./bin/codify-images"
   },
   "scripts": {
-    "build": "rimraf dist/ && babel --verbose --out-dir dist src bin",
+    "prebuild": "rimraf dist/",
+    "build": "babel --verbose --out-dir dist src",
     "lint": "run-s -s lint:git lint:js lint:md",
     "lint:js": "eslint .",
     "lint:md": "markdownlint .",
@@ -15,9 +16,9 @@
     "format": "run-s -s format:js format:md",
     "format:js": "npm run -s lint:js -- --fix",
     "format:md": "npm run -s lint:md -- --fix",
-    "test": "run-s -s lint test:unit test:integration",
-    "test:unit": "nyc mocha test/unit/*.test.js",
-    "test:integration": "npm run -s build && rimraf test/integration/.temp/ && mocha test/integration/*.test.js"
+    "pretest": "rimraf test/.temp/",
+    "test": "run-s -s lint test:unit",
+    "test:unit": "nyc mocha test/*.test.js"
   },
   "repository": {
     "type": "git",
@@ -47,7 +48,8 @@
     "chalk": "^4.1.2",
     "commander": "^8.3.0",
     "lodash.camelcase": "^4.3.0",
-    "mini-svg-data-uri": "^1.4.3"
+    "mini-svg-data-uri": "^1.4.3",
+    "mkdirp": "^1.0.4"
   },
   "devDependencies": {
     "@babel/cli": "^7.16.0",
