@@ -49,10 +49,8 @@ jobs:
           cache: npm
       - name: Install packages
         run: npm ci
-      - name: Run tests (unit)
+      - name: Run tests
         run:  npm run test:unit
-      - name: Run tests (integration)
-        run:  npm run test:integration
       - name: Report coverage
         uses: coverallsapp/github-action@1.1.3
         with:

@@ -1,12 +1,12 @@
-import * as errors from '../../src/errors.js';
-import * as expectedImages from '../assets/images.js';
-import { codifyImages, codifyImagesSync } from '../../src/';
+import * as errors from '../src/errors.js';
+import * as expectedImages from './assets/images.js';
+import { codifyImages, codifyImagesSync } from '../src/codify-images.js';
 import { expect } from 'chai';
 import { join } from 'path';
 import { spy } from 'sinon';
 
 const { InvalidPathError, InvalidSvgModeError, UnsupportedTypeError } = errors;
-const assetsPath = join(__dirname, '../assets/');
+const assetsPath = join(__dirname, './assets/');
 const svgModes = ['base64', 'uri', 'mini', 'mini-srcset'];
 const excludeKeys = [
   'testSvgBase64',
@@ -42,24 +42,24 @@ const verifyImages = (images, svgMode) => {
 };
 
 describe('codify-images', function() {
-  this.timeout(50);
-  this.slow(10);
+  this.timeout(100);
+  this.slow(50);
 
   describe('async', () => {
     describe('generates', () => {
-      it('defaults', async () => {
+      it('with defaults', async () => {
         verifyImages(await codifyImages(assetsPath));
       });
 
       for (const mode of svgModes) {
-        it(`svg '${mode}'`, async () => {
+        it(`with svg '${mode}'`, async () => {
           verifyImages(await codifyImages(assetsPath, { svgMode: mode }), mode);
         });
       }
     });
 
     describe('errors', () => {
-      it('invalid svg mode', async () => {
+      it('with invalid svg mode', async () => {
         try {
           await codifyImages(assetsPath, { svgMode: 'not a mode' });
         } catch (err) {
@@ -71,7 +71,7 @@ describe('codify-images', function() {
         throw new Error('fail');
       });
 
-      it('invalid path', async () => {
+      it('with invalid path', async () => {
         try {
           await codifyImages(invalidAssetPath);
         } catch (err) {
@@ -83,7 +83,7 @@ describe('codify-images', function() {
         throw new Error('fail');
       });
 
-      it('unsupported type', async () => {
+      it('with unsupported type', async () => {
         try {
           await codifyImages(assetsPath, { ignoreUnsupportedTypes: false });
         } catch (err) {
@@ -110,19 +110,19 @@ describe('codify-images', function() {
 
   describe('sync', () => {
     describe('generates', () => {
-      it('defaults', () => {
+      it('with defaults', () => {
         verifyImages(codifyImagesSync(assetsPath));
       });
 
       for (const mode of svgModes) {
-        it(`svg '${mode}'`, () => {
+        it(`with svg '${mode}'`, () => {
           verifyImages(codifyImagesSync(assetsPath, { svgMode: mode }), mode);
         });
       }
     });
 
     describe('errors', () => {
-      it('invalid svg mode', () => {
+      it('with invalid svg mode', () => {
         try {
           codifyImagesSync(assetsPath, { svgMode: 'not a mode' });
         } catch (err) {
@@ -134,7 +134,7 @@ describe('codify-images', function() {
         throw new Error('fail');
       });
 
-      it('invalid path', () => {
+      it('with invalid path', () => {
         try {
           codifyImagesSync(invalidAssetPath);
         } catch (err) {
@@ -146,7 +146,7 @@ describe('codify-images', function() {
         throw new Error('fail');
       });
 
-      it('unsupported type', () => {
+      it('with unsupported type', () => {
         try {
           codifyImagesSync(assetsPath, { ignoreUnsupportedTypes: false });
         } catch (err) {

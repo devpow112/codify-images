@@ -149,3 +149,8 @@ export const codifyImages = (path, options = {}) => {
     }
   });
 };
+
+export default {
+  codifyImages,
+  codifyImagesSync
+};
