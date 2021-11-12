@@ -46,7 +46,7 @@ describe('codify-images', function() {
   this.slow(10);
 
   describe('async', () => {
-    describe('generates with', () => {
+    describe('generates', () => {
       it('defaults', async () => {
         verifyImages(await codifyImages(assetsPath));
       });
@@ -58,7 +58,7 @@ describe('codify-images', function() {
       }
     });
 
-    describe('errors with', () => {
+    describe('errors', () => {
       it('invalid svg mode', async () => {
         try {
           await codifyImages(assetsPath, { svgMode: 'not a mode' });
@@ -109,7 +109,7 @@ describe('codify-images', function() {
   });
 
   describe('sync', () => {
-    describe('generates with', () => {
+    describe('generates', () => {
       it('defaults', () => {
         verifyImages(codifyImagesSync(assetsPath));
       });
@@ -121,7 +121,7 @@ describe('codify-images', function() {
       }
     });
 
-    describe('errors with', () => {
+    describe('errors', () => {
       it('invalid svg mode', () => {
         try {
           codifyImagesSync(assetsPath, { svgMode: 'not a mode' });
