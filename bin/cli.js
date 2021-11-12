@@ -8,7 +8,13 @@ import { codifyImagesSync } from '../';
 import { resolve } from 'path';
 
 const generateStart = options => {
-  return options.es === 6 ? '' : 'module.exports = {\n';
+  let output = options.banner === true ? '// auto-generated\n' : '';
+
+  if (options.es === 5) {
+    output += 'module.exports = {\n';
+  }
+
+  return output;
 };
 
 const generateLine = (name, data, options) => {
@@ -174,6 +180,11 @@ const main = () => {
       'number of indent elements to output',
       value => customParseInt(value, 10),
       1
+    )
+    .option(
+      '-B, --no-banner',
+      'do not include banner comment at top of generated file',
+      false
     )
     .addOption(
       new Option('-t, --indent-type <type>', 'type of indent to output')
