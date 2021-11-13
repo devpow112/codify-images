@@ -35,6 +35,7 @@
   },
   "homepage": "https://github.com/devpow112/codify-images#readme",
   "files": [
+    "bin/**/*",
     "dist/**/*.js"
   ],
   "directories": {
