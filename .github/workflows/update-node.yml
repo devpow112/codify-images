@@ -19,6 +19,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2.4.0
+        with:
+          persist-credentials: false
       - name: Determine version
         id: node-version
         run: |
@@ -29,8 +31,13 @@ jobs:
           echo "::set-output name=old::$OLD_VERSION"
       - name: Switch to '${{env.BRANCH}}'
         run: |
+          CREDENTIALS="x-access-token:$GITHUB_TOKEN"
+          URL="https://$CREDENTIALS@github.com/${{github.repository}}.git"
+          git remote set-url origin $URL
           git fetch origin +refs/heads/$BRANCH:refs/heads/$BRANCH || true
           git checkout $BRANCH || git checkout -b $BRANCH
+        env:
+          GITHUB_TOKEN: ${{secrets.AUTOMATION_TOKEN}}
       - name: Update .nvmrc
         run: echo ${{steps.node-version.outputs.new}} > .nvmrc
       - name: Check for changes
@@ -45,8 +52,12 @@ jobs:
           git config user.email ${{secrets.AUTOMATION_EMAIL}}
           git add .nvmrc
           git commit -m "chore(node): bump from $OLD_VERSION to $NEW_VERSION"
+          CREDENTIALS="x-access-token:$GITHUB_TOKEN"
+          URL="https://$CREDENTIALS@github.com/${{github.repository}}.git"
+          git remote set-url origin $URL
           git push --force origin $BRANCH
         env:
+          GITHUB_TOKEN: ${{secrets.AUTOMATION_TOKEN}}
           NEW_VERSION: ${{steps.node-version.outputs.new}}
           OLD_VERSION: ${{steps.node-version.outputs.old}}
       - name: Create pull request
