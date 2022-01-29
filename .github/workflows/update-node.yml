@@ -5,6 +5,7 @@ on:
     paths: .github/workflows/update-node.yml
   schedule:
     - cron: '0 15 * * *'
+  workflow_dispatch:
 permissions:
   contents: write
 concurrency: update-node
@@ -13,11 +14,11 @@ jobs:
     name: Update Node
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    env:
+      BRANCH: auto/update-node
     steps:
       - name: Checkout
         uses: actions/checkout@v2.4.0
-        with:
-          persist-credentials: false
       - name: Determine version
         id: node-version
         run: |
@@ -26,6 +27,10 @@ jobs:
           NEW_VERSION=${NEW_VERSION#'v'}
           echo "::set-output name=new::$NEW_VERSION"
           echo "::set-output name=old::$OLD_VERSION"
+      - name: Switch to '${{env.BRANCH}}'
+        run: |
+          git fetch origin +refs/heads/$BRANCH:refs/heads/$BRANCH || true
+          git checkout $BRANCH || git checkout -b $BRANCH
       - name: Update .nvmrc
         run: echo ${{steps.node-version.outputs.new}} > .nvmrc
       - name: Check for changes
@@ -34,17 +39,50 @@ jobs:
       - name: Push commit
         if: steps.changes.outputs.exist
         run: |
-          git config user.name $COMMIT_USERNAME
-          git config user.email $COMMIT_EMAIL
+          git reset --hard origin/main
+          echo $NEW_VERSION > .nvmrc
+          git config user.name ${{secrets.AUTOMATION_USER}}
+          git config user.email ${{secrets.AUTOMATION_EMAIL}}
           git add .nvmrc
           git commit -m "chore(node): bump from $OLD_VERSION to $NEW_VERSION"
-          CREDENTIALS="x-access-token:$GITHUB_TOKEN"
-          URL="https://$CREDENTIALS@github.com/${{github.repository}}.git"
-          git remote set-url origin $URL
-          git push origin main
+          git push --force origin $BRANCH
         env:
-          GITHUB_TOKEN: ${{secrets.PERSONAL_GITHUB_TOKEN}}
-          COMMIT_USERNAME: github-actions[bot]
-          COMMIT_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
           NEW_VERSION: ${{steps.node-version.outputs.new}}
           OLD_VERSION: ${{steps.node-version.outputs.old}}
+      - name: Create pull request
+        if: steps.changes.outputs.exist
+        uses: actions/github-script@v5.1.0
+        with:
+          script: |
+            const oldVer = '${{steps.node-version.outputs.old}}';
+            const newVer = '${{steps.node-version.outputs.new}}';
+            const title = `chore(node): bump from ${oldVer} to ${newVer}`;
+            const [owner, repo] = '${{github.repository}}'.split('/');
+            const base = 'refs/heads/main';
+            const head = 'refs/heads/${{env.BRANCH}}';
+            const labels = ['auto', 'dependencies'];
+            const pullRequests = await github.rest.pulls.list({
+              head: `${owner}:${head}`,
+              owner, repo, base
+            });
+            if (pullRequests.data.length === 0) {
+              const createResult = await github.rest.pulls.create({
+                title, owner, repo, head, base
+              });
+              github.rest.issues.addLabels({
+                issue_number: createResult.data.number,
+                owner, repo, labels
+              });
+              console.log('Created new pull request');
+              return createResult.data.number;
+            } else {
+              const prNumber = pullRequests.data[0].number;
+              github.rest.issues.update({
+                issue_number: prNumber,
+                title, owner, repo, labels
+              });
+              console.log(`Pull request already exists, updated #${prNumber}`);
+              return prNumber;
+            }
+          result-encoding: string
+          github-token: ${{secrets.AUTOMATION_TOKEN}}
