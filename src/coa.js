@@ -121,7 +121,6 @@ export const setUpProgram = program => {
       '<input path>',
       'path to where image files reside',
       value => {
-
         try {
           const path = resolve(value);
           const stat = statSync(path);
@@ -172,8 +171,7 @@ export const setUpProgram = program => {
     )
     .option(
       '-B, --no-banner',
-      'do not include banner comment at top of generated file',
-      false
+      'do not include banner comment at top of generated file'
     )
     .addOption(
       new Option('-t, --indent-type <type>', 'type of indent to output')
