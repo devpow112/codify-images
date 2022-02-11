@@ -1,17 +1,3 @@
 {
-  "presets": [
-    [
-      "@babel/preset-env",
-      {
-        "targets": {
-          "node": 12
-        }
-      }
-    ]
-  ],
-  "plugins": [
-    "add-module-exports"
-  ],
-  "sourceMaps": "inline",
-  "minified": true
+  "extends": "@devpow112/babel-config/node-12"
 }
