@@ -1,6 +1,6 @@
 {
   "name": "codify-images",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "Quick and easy tool for converting a set of images into inline JavaScript",
   "main": "dist/codify-images.js",
   "bin": {
