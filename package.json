@@ -4,7 +4,7 @@
   "description": "Quick and easy tool for converting a set of images into inline JavaScript",
   "main": "dist/codify-images.js",
   "bin": {
-    "codify-images": "./bin/codify-images"
+    "codify-images": "./dist/cli.js"
   },
   "scripts": {
     "prebuild": "rimraf dist/",
@@ -35,7 +35,6 @@
   },
   "homepage": "https://github.com/devpow112/codify-images#readme",
   "files": [
-    "bin/**/*",
     "dist/**/*.js"
   ],
   "directories": {

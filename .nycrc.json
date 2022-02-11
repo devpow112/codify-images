@@ -8,6 +8,9 @@
   "include": [
     "src/**/*.js"
   ],
+  "exclude": [
+    "src/cli.js"
+  ],
   "reporter": [
     "lcov",
     "text"

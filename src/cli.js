@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-const { setUpProgram } = require('../dist/coa.js');
-const { program } = require('commander');
+import { program } from 'commander';
+import { setUpProgram } from './coa.js';
 
 setUpProgram(program);
 
