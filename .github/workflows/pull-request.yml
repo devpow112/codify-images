@@ -1,0 +1,11 @@
+name: Pull Request
+on:
+  pull_request:
+    branches: main
+jobs:
+  ci:
+    name: CI
+    permissions:
+      contents: read
+      security-events: write
+    uses: ./.github/workflows/ci.yml
