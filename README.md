@@ -2,7 +2,6 @@
 
 [![License][License Badge]](LICENSE)
 [![Version][Version Badge]][Version Package]
-[![CI][CI Badge]][CI Workflow]
 [![Release][Release Badge]][Release Workflow]
 [![Coverage][Coverage Badge]][Coverage Report]
 [![Vulnerabilities][Vulnerabilities Badge]][Vulnerabilities Report]
@@ -159,8 +158,6 @@ npm run build
 [Version Badge]: https://img.shields.io/npm/v/codify-images?label=Version
 [Version Package]: https://www.npmjs.com/codify-images
 [Node Version Badge]: https://img.shields.io/node/v/codify-images
-[CI Badge]: https://github.com/devpow112/codify-images/actions/workflows/ci.yml/badge.svg?branch=main
-[CI Workflow]: https://github.com/devpow112/codify-images/actions/workflows/ci.yml?query=branch%3Amain
 [Release Badge]: https://github.com/devpow112/codify-images/actions/workflows/release.yml/badge.svg?branch=main
 [Release Workflow]: https://github.com/devpow112/codify-images/actions/workflows/release.yml?query=branch%3Amain
 [Coverage Badge]: https://img.shields.io/coveralls/github/devpow112/codify-images/main?label=Coverage
