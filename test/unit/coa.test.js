@@ -1,9 +1,9 @@
-import * as expectedImages from './assets/images.js';
+import * as expectedImages from '../assets/images.js';
 import { Command, InvalidArgumentError } from 'commander';
 import { readFile, rm } from 'fs/promises';
 import { expect } from 'chai';
 import { resolve } from 'path';
-import { setUpProgram } from '../src/coa.js';
+import { setUpProgram } from '../../src/coa.js';
 
 const excludeKeys = [
   'testSvgBase64',
@@ -30,7 +30,7 @@ const execute = async options => {
   options = options ?? {};
   options.args = options.args ?? [];
   options.banner = options.banner ?? true;
-  options.input = resolve(__dirname, options.input ?? './assets/');
+  options.input = resolve(__dirname, options.input ?? '../assets/');
 
   if (options.output) {
     options.output = resolve(__dirname, '.temp/', options.output);
@@ -188,7 +188,7 @@ describe('coa', function() {
 
   describe('errors', () => {
     const inputs = [{
-      path: '../.github/',
+      path: '../../.github/',
       type: Error
     }, {
       path: 'not a path',

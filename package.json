@@ -18,7 +18,7 @@
     "format:md": "npm run -s lint:md -- --fix",
     "pretest": "rimraf test/.temp/",
     "test": "run-s -s lint test:unit",
-    "test:unit": "nyc mocha test/*.test.js"
+    "test:unit": "nyc mocha test/unit/*.test.js"
   },
   "repository": {
     "type": "git",

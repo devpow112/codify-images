@@ -1,12 +1,12 @@
-import * as errors from '../src/errors.js';
-import * as expectedImages from './assets/images.js';
-import { codifyImages, codifyImagesSync } from '../src/codify-images.js';
+import * as errors from '../../src/errors.js';
+import * as expectedImages from '../assets/images.js';
+import { codifyImages, codifyImagesSync } from '../../src/codify-images.js';
 import { expect } from 'chai';
 import { join } from 'path';
 import { spy } from 'sinon';
 
 const { InvalidPathError, InvalidSvgModeError, UnsupportedTypeError } = errors;
-const assetsPath = join(__dirname, './assets/');
+const assetsPath = join(__dirname, '../assets/');
 const svgModes = ['base64', 'uri', 'mini', 'mini-srcset'];
 const excludeKeys = [
   'testSvgBase64',
