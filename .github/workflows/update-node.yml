@@ -62,7 +62,7 @@ jobs:
           OLD_VERSION: ${{steps.node-version.outputs.old}}
       - name: Create pull request
         if: steps.changes.outputs.exist
-        uses: actions/github-script@v5.1.0
+        uses: actions/github-script@v6.0.0
         with:
           script: |
             const oldVer = '${{steps.node-version.outputs.old}}';
