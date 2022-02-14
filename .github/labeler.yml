@@ -4,3 +4,5 @@ github-actions:
   - .github/workflows/*.yml
 javascript:
   - '*.js'
+  - package.json
+  - package-lock.json
