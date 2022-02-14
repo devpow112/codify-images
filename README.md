@@ -11,7 +11,7 @@ Quick and easy tool for converting a set of images into inline JavaScript.
 
 ## Installation
 
-```sh
+```console
 npm i -D codify-images
 ```
 
@@ -68,7 +68,7 @@ const images = {
 
 Below is the output of `codify-images --help`.
 
-```sh
+```console
 Usage: codify-images [options] <input path>
 
 Arguments:
@@ -96,7 +96,7 @@ latest LTS version is tested against.
 
 Install dependencies via `npm`.
 
-```sh
+```console
 npm i
 ```
 
@@ -104,7 +104,7 @@ npm i
 
 Execute linters via `npm`.
 
-```sh
+```console
 # git, javascript and markdown
 npm run lint
 
@@ -122,7 +122,7 @@ npm run lint:md
 
 Execute tests via `npm`.
 
-```sh
+```console
 # lint and unit tests
 npm test
 
@@ -134,7 +134,7 @@ npm run test:unit
 
 Execute formatters via `npm`.
 
-```sh
+```console
 # javascript and markdown
 npm run format
 
@@ -149,7 +149,7 @@ npm run format:md
 
 Run a build via `npm`.
 
-```sh
+```console
 npm run build
 ```
 
