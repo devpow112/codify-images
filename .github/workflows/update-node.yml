@@ -7,93 +7,50 @@ on:
     - cron: '0 15 * * *'
   workflow_dispatch:
 permissions:
-  contents: write
+  contents: read
 concurrency: update-node
 jobs:
   update-node:
     name: Update Node
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    env:
-      BRANCH: auto/update-node
     steps:
       - name: Checkout
         uses: actions/checkout@v3.0.0
-        with:
-          persist-credentials: false
-      - name: Determine version
-        id: node-version
+      - name: Determine info
+        shell: bash
+        id: info
         run: |
           OLD_VERSION=$(<.nvmrc)
           NEW_VERSION=$(curl -sSf https://resolve-node.vercel.app/lts)
           NEW_VERSION=${NEW_VERSION#'v'}
-          echo "::set-output name=new::$NEW_VERSION"
-          echo "::set-output name=old::$OLD_VERSION"
-      - name: Switch to '${{env.BRANCH}}'
-        run: |
-          CREDENTIALS="x-access-token:$GITHUB_TOKEN"
-          URL="https://$CREDENTIALS@github.com/${{github.repository}}.git"
-          git remote set-url origin $URL
-          git fetch origin +refs/heads/$BRANCH:refs/heads/$BRANCH || true
-          git checkout $BRANCH || git checkout -b $BRANCH
-        env:
-          GITHUB_TOKEN: ${{secrets.AUTOMATION_TOKEN}}
+          UPDATE_TITLE="chore(node): bump from $OLD_VERSION to $NEW_VERSION"
+          UPDATE_BODY="Bump Node from $OLD_VERSION to $NEW_VERSION."
+          echo "::set-output name=version::$NEW_VERSION"
+          echo "::set-output name=update-title::$UPDATE_TITLE"
+          echo "::set-output name=update-body::$UPDATE_BODY"
       - name: Update .nvmrc
-        run: echo ${{steps.node-version.outputs.new}} > .nvmrc
-      - name: Check for changes
+        run: echo '${{steps.info.outputs.version}}' > .nvmrc
+      - name: Handle changes
+        uses: peter-evans/create-pull-request@v3.14.0
         id: changes
-        run: git diff --exit-code .nvmrc || echo '::set-output name=exist::true'
-      - name: Push commit
-        if: steps.changes.outputs.exist
-        run: |
-          git reset --hard origin/main
-          echo $NEW_VERSION > .nvmrc
-          git config user.name ${{secrets.AUTOMATION_USER}}
-          git config user.email ${{secrets.AUTOMATION_EMAIL}}
-          git add .nvmrc
-          git commit -m "chore(node): bump from $OLD_VERSION to $NEW_VERSION"
-          CREDENTIALS="x-access-token:$GITHUB_TOKEN"
-          URL="https://$CREDENTIALS@github.com/${{github.repository}}.git"
-          git remote set-url origin $URL
-          git push --force origin $BRANCH
-        env:
-          GITHUB_TOKEN: ${{secrets.AUTOMATION_TOKEN}}
-          NEW_VERSION: ${{steps.node-version.outputs.new}}
-          OLD_VERSION: ${{steps.node-version.outputs.old}}
-      - name: Create pull request
-        if: steps.changes.outputs.exist
-        uses: actions/github-script@v6.0.0
         with:
-          script: |
-            const oldVer = '${{steps.node-version.outputs.old}}';
-            const newVer = '${{steps.node-version.outputs.new}}';
-            const title = `chore(node): bump from ${oldVer} to ${newVer}`;
-            const [owner, repo] = '${{github.repository}}'.split('/');
-            const base = 'refs/heads/main';
-            const head = 'refs/heads/${{env.BRANCH}}';
-            const labels = ['auto', 'dependencies'];
-            const pullRequests = await github.rest.pulls.list({
-              head: `${owner}:${head}`,
-              owner, repo, base
-            });
-            if (pullRequests.data.length === 0) {
-              const createResult = await github.rest.pulls.create({
-                title, owner, repo, head, base
-              });
-              github.rest.issues.addLabels({
-                issue_number: createResult.data.number,
-                owner, repo, labels
-              });
-              console.log('Created new pull request');
-              return createResult.data.number;
-            } else {
-              const prNumber = pullRequests.data[0].number;
-              github.rest.issues.update({
-                issue_number: prNumber,
-                title, owner, repo, labels
-              });
-              console.log(`Pull request already exists, updated #${prNumber}`);
-              return prNumber;
-            }
-          result-encoding: string
-          github-token: ${{secrets.AUTOMATION_TOKEN}}
+          token: ${{secrets.AUTOMATION_TOKEN}}
+          commit-message: ${{steps.info.outputs.update-title}}
+          committer: ${{env.GIT_USER}}
+          add-paths: .nvmrc
+          author: ${{env.GIT_USER}}
+          branch: auto/update-node
+          delete-branch: true
+          title: ${{steps.info.outputs.update-title}}
+          body: ${{steps.info.outputs.update-body}}
+          labels: auto,javascript,dependencies
+        env:
+          GIT_USER: ${{secrets.AUTOMATION_USER}} <${{secrets.AUTOMATION_EMAIL}}>
+      - name: Enable auto-merge
+        if: steps.changes.outputs.pull-request-operation == 'created'
+        uses: peter-evans/enable-pull-request-automerge@v1.2.0
+        with:
+          token: ${{secrets.AUTOMATION_TOKEN}}
+          pull-request-number: ${{steps.changes.outputs.pull-request-number}}
+          merge-method: rebase
