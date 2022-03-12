@@ -40,7 +40,7 @@ jobs:
           token: ${{secrets.AUTOMATION_TOKEN}}
           commit-message: ${{steps.info.outputs.update-title}}
           committer: ${{env.GIT_USER}}
-          add-paths: .nvmrc
+          add-paths: LICENSE
           author: ${{env.GIT_USER}}
           branch: auto/update-license
           delete-branch: true
