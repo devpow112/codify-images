@@ -44,7 +44,7 @@ jobs:
           delete-branch: true
           title: ${{steps.info.outputs.update-title}}
           body: ${{steps.info.outputs.update-body}}
-          labels: auto,javascript,dependencies
+          labels: auto,dependencies
         env:
           GIT_USER: ${{secrets.AUTOMATION_USER}} <${{secrets.AUTOMATION_EMAIL}}>
       - name: Enable auto-merge
