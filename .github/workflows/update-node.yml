@@ -32,7 +32,7 @@ jobs:
       - name: Update .nvmrc
         run: echo '${{steps.info.outputs.version}}' > .nvmrc
       - name: Handle changes
-        uses: peter-evans/create-pull-request@v3.14.0
+        uses: peter-evans/create-pull-request@v4.0.0
         id: changes
         with:
           token: ${{secrets.AUTOMATION_TOKEN}}
@@ -49,8 +49,7 @@ jobs:
           GIT_USER: ${{secrets.AUTOMATION_USER}} <${{secrets.AUTOMATION_EMAIL}}>
       - name: Enable auto-merge
         if: steps.changes.outputs.pull-request-operation == 'created'
-        uses: peter-evans/enable-pull-request-automerge@v1.2.0
-        with:
-          token: ${{secrets.AUTOMATION_TOKEN}}
-          pull-request-number: ${{steps.changes.outputs.pull-request-number}}
-          merge-method: rebase
+        run: gh pr merge --auto --rebase "$PULL_REQUEST_URL"
+        env:
+          PULL_REQUEST_URL: ${{steps.changes.outputs.pull-request-url}}
+          GITHUB_TOKEN: ${{secrets.AUTOMATION_TOKEN}}
