@@ -1,10 +1,10 @@
 documentation:
-  - '*.md'
+  - '**/*.md'
   - LICENSE
 github-actions:
   - .github/workflows/*.yml
 javascript:
-  - '*.js'
+  - '**/*.js'
   - .npmrc
   - .nvmrc
   - package.json
