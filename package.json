@@ -52,7 +52,7 @@
     "mkdirp": "^1.0.4"
   },
   "devDependencies": {
-    "@babel/cli": "^7.19.3",
+    "@babel/cli": "^7.20.7",
     "@babel/register": "^7.18.9",
     "@commitlint/cli": "^17.3.0",
     "@devpow112/babel-config": "^1.0.3",
