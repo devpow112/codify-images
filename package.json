@@ -58,7 +58,7 @@
     "@devpow112/babel-config": "^1.0.5",
     "@devpow112/commitlint-config": "^1.0.4",
     "@devpow112/eslint-config": "^1.1.4",
-    "@devpow112/semantic-release-config": "^1.2.2",
+    "@devpow112/semantic-release-config": "^1.2.3",
     "chai": "^4.3.7",
     "eslint": "^8.31.0",
     "markdownlint-cli": "^0.32.2",
