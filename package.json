@@ -46,7 +46,7 @@
   },
   "dependencies": {
     "chalk": "^4.1.2",
-    "commander": "^9.4.1",
+    "commander": "^9.5.0",
     "lodash.camelcase": "^4.3.0",
     "mini-svg-data-uri": "^1.4.4",
     "mkdirp": "^1.0.4"
