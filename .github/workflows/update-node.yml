@@ -26,9 +26,9 @@ jobs:
           NEW_VERSION=${NEW_VERSION#'v'}
           UPDATE_TITLE="chore(node): bump from $OLD_VERSION to $NEW_VERSION"
           UPDATE_BODY="Bump Node from $OLD_VERSION to $NEW_VERSION."
-          echo "::set-output name=version::$NEW_VERSION"
-          echo "::set-output name=update-title::$UPDATE_TITLE"
-          echo "::set-output name=update-body::$UPDATE_BODY"
+          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "update-title=$UPDATE_TITLE" >> $GITHUB_OUTPUT
+          echo "update-body=$UPDATE_BODY" >> $GITHUB_OUTPUT
       - name: Update .nvmrc
         run: echo '${{steps.info.outputs.version}}' > .nvmrc
       - name: Handle changes
