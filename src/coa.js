@@ -3,10 +3,11 @@ import { InvalidArgumentError, Option } from 'commander';
 import { statSync, writeFileSync } from 'fs';
 import chalk from 'chalk';
 import { codifyImagesSync } from './codify-images.js';
-import { nativeSync as mkdirpSync } from 'mkdirp';
+import { mkdirp } from 'mkdirp';
 import { resolve } from 'path';
 
 const { blue, green, red, yellow } = chalk;
+const mkdirpSync = mkdirp.sync;
 
 const generateStart = options => {
   let output = options.banner === true ? '// auto-generated\n' : '';
