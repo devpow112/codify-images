@@ -1,6 +1,6 @@
 {
   "name": "codify-images",
-  "version": "1.4.22",
+  "version": "1.4.23",
   "description": "Quick and easy tool for converting a set of images into inline JavaScript",
   "main": "dist/codify-images.js",
   "bin": {
@@ -49,12 +49,12 @@
     "commander": "^10.0.0",
     "lodash.camelcase": "^4.3.0",
     "mini-svg-data-uri": "^1.4.4",
-    "mkdirp": "^2.1.5"
+    "mkdirp": "^2.1.6"
   },
   "devDependencies": {
     "@babel/cli": "^7.21.0",
     "@babel/register": "^7.21.0",
-    "@commitlint/cli": "^17.4.4",
+    "@commitlint/cli": "^17.5.0",
     "@devpow112/babel-config": "^1.0.5",
     "@devpow112/commitlint-config": "^1.0.4",
     "@devpow112/eslint-config": "^1.1.4",
@@ -65,7 +65,7 @@
     "mocha": "^10.2.0",
     "npm-run-all": "^4.1.5",
     "nyc": "^15.1.0",
-    "rimraf": "^4.4.0",
+    "rimraf": "^4.4.1",
     "semantic-release": "^19.0.5",
     "sinon": "^15.0.2"
   }
