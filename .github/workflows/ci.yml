@@ -43,7 +43,7 @@ jobs:
       - name: Run tests
         run:  npm run test:unit
       - name: Report coverage
-        uses: coverallsapp/github-action@v2.1.0
+        uses: coverallsapp/github-action@v2.1.1
         with:
           github-token: ${{github.token}}
   build:
@@ -73,9 +73,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3.5.2
       - name: Set up CodeQL
-        uses: github/codeql-action/init@v2.2.11
+        uses: github/codeql-action/init@v2.2.12
         with:
           languages: javascript
           config-file: .github/codeql.yml
       - name: Run analysis
-        uses: github/codeql-action/analyze@v2.2.11
+        uses: github/codeql-action/analyze@v2.2.12
