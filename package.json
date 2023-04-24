@@ -3,6 +3,10 @@
   "version": "1.4.25",
   "description": "Quick and easy tool for converting a set of images into inline JavaScript",
   "main": "dist/codify-images.js",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },  
   "bin": {
     "codify-images": "./dist/cli.js"
   },
