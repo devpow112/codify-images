@@ -6,8 +6,8 @@ Currently only the latest stream is supported.
 
 | Version | Supported          |
 | ------- | ------------------ |
-|  1.4.x  | :white_check_mark: |
-|  < 1.4  | :x:                |
+|  2.0.x  | :white_check_mark: |
+|  < 2.0  | :x:                |
 
 ## Reporting a Vulnerability
 

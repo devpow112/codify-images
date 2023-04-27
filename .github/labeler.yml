@@ -1,5 +1,7 @@
 documentation:
   - '**/*.md'
+  - .github/CODEOWNERS
+  - .github/SECURITY.md
   - LICENSE
 github-actions:
   - .github/workflows/*.yml
