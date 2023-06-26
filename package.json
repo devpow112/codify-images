@@ -65,7 +65,7 @@
     "nyc": "^15.1.0",
     "rimraf": "^5.0.1",
     "semantic-release": "^21.0.5",
-    "sinon": "^15.1.2",
+    "sinon": "^15.2.0",
     "sort-package-json": "^2.4.1"
   },
   "engines": {
