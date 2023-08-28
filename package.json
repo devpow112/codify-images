@@ -57,7 +57,7 @@
     "@devpow112/commitlint-config": "^2.0.0",
     "@devpow112/eslint-config": "^2.0.1",
     "@devpow112/semantic-release-config": "^2.1.2",
-    "chai": "^4.3.7",
+    "chai": "^4.3.8",
     "eslint": "^8.48.0",
     "markdownlint-cli": "^0.35.0",
     "mocha": "^10.2.0",
