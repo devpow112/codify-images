@@ -1,13 +1,19 @@
 documentation:
-  - '**/*.md'
-  - .github/CODEOWNERS
-  - .github/SECURITY.md
-  - LICENSE
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/*.md'
+      - .github/CODEOWNERS
+      - .github/SECURITY.md
+      - LICENSE
 github-actions:
-  - .github/workflows/*.yml
+  - changed-files:
+    - any-glob-to-any-file:
+      - .github/workflows/*.yml
 javascript:
-  - '**/*.js'
-  - .npmrc
-  - .nvmrc
-  - package.json
-  - package-lock.json
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/*.js'
+      - .npmrc
+      - .nvmrc
+      - package.json
+      - package-lock.json
