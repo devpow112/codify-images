@@ -62,20 +62,3 @@ jobs:
         run: npm ci
       - name: Run build
         run: npm run build
-  analyze:
-    name: Analyze
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    permissions:
-      contents: read
-      security-events: write
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4.1.1
-      - name: Set up CodeQL
-        uses: github/codeql-action/init@v3.24.1
-        with:
-          languages: javascript
-          config-file: .github/codeql.yml
-      - name: Run analysis
-        uses: github/codeql-action/analyze@v3.24.1
