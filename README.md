@@ -4,7 +4,6 @@
 [![Version][Version Badge]][Version Package]
 [![Release][Release Badge]][Release Workflow]
 [![Coverage][Coverage Badge]][Coverage Report]
-[![Vulnerabilities][Vulnerabilities Badge]][Vulnerabilities Report]
 [![Node Version][Node Version Badge]](package.json#L72)
 
 Quick and easy tool for converting a set of images into inline JavaScript.
@@ -133,22 +132,22 @@ npm test
 npm run test:unit
 ```
 
-### Formatting
+### Fixing
 
-Execute formatters via `npm`.
+Execute fixers via `npm`.
 
 ```console
 # javascript, markdown and package.json
-npm run format
+npm run fix
 
 # javascript only
-npm run format:js
+npm run fix:js
 
 # markdown only
-npm run format:md
+npm run fix:md
 
 # package.json only
-npm run format:pkg
+npm run fix:pkg
 ```
 
 ### Building
@@ -168,6 +167,4 @@ npm run build
 [Release Workflow]: https://github.com/devpow112/codify-images/actions/workflows/release.yml?query=branch%3Amain
 [Coverage Badge]: https://img.shields.io/coveralls/github/devpow112/codify-images/main?label=Coverage
 [Coverage Report]: https://coveralls.io/github/devpow112/codify-images?branch=main
-[Vulnerabilities Badge]: https://img.shields.io/snyk/vulnerabilities/github/devpow112/codify-images?label=Vulnerabilities
-[Vulnerabilities Report]: https://snyk.io/test/github/devpow112/codify-images
 [Mini SVG Data]: https://www.npmjs.com/package/mini-svg-data-uri
