@@ -53,7 +53,7 @@
     "@babel/cli": "^7.24.7",
     "@babel/register": "^7.24.6",
     "@commitlint/cli": "^18.6.1",
-    "@devpow112/babel-config": "^1.2.1",
+    "@devpow112/babel-config": "^1.2.2",
     "@devpow112/commitlint-config": "^2.0.1",
     "@devpow112/eslint-config": "^2.0.3",
     "@devpow112/semantic-release-config": "^2.2.3",
