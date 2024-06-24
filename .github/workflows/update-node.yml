@@ -32,7 +32,7 @@ jobs:
       - name: Update .nvmrc
         run: echo '${{steps.info.outputs.version}}' > .nvmrc
       - name: Handle changes
-        uses: peter-evans/create-pull-request@v6.0.5
+        uses: peter-evans/create-pull-request@v6.1.0
         id: changes
         with:
           token: ${{secrets.AUTOMATION_TOKEN}}
