@@ -43,7 +43,7 @@ jobs:
       - name: Run tests
         run:  npm run test:unit
       - name: Report coverage
-        uses: coverallsapp/github-action@v2.3.0
+        uses: coverallsapp/github-action@v2.3.3
         with:
           github-token: ${{github.token}}
   build:
