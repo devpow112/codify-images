@@ -133,7 +133,7 @@ export const codifyImagesSync = (path, options = {}) => {
 
   try {
     files = readdirSync(resolvePath(path));
-  } catch (_) {
+  } catch {
     throw new InvalidPathError(path);
   }
 

@@ -131,7 +131,7 @@ export const setUpProgram = program => {
           }
 
           return path;
-        } catch (_) {
+        } catch {
           throw new InvalidArgumentError('Must exist.');
         }
       }

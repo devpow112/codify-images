@@ -33,3 +33,6 @@ updates:
       - dependency-name: chalk
         versions:
           - '>= 5'
+      - dependency-name: chai
+        versions:
+          - '>= 5'
