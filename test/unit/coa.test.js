@@ -88,7 +88,7 @@ const validate = async options => {
 
   let images = await import(outputFilePath);
 
-  expect(images).to.be.instanceOf(Object);
+  expect(images).to.be.an('object');
 
   if (options.es === 5) {
     expect(images).to.have.deep.keys([...expectedKeys, 'default']);
