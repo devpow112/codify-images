@@ -4,7 +4,7 @@
 [![Version][Version Badge]][Version Package]
 [![Release][Release Badge]][Release Workflow]
 [![Coverage][Coverage Badge]][Coverage Report]
-[![Node Version][Node Version Badge]](package.json#L72)
+[![Node Version][Node Version Badge]](package.json#L75)
 
 Quick and easy tool for converting a set of images into inline JavaScript.
 
