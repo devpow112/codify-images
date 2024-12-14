@@ -34,8 +34,14 @@ jobs:
         run: npm ci
       - name: Run build
         run: npm run build
+      - name: Generate app token
+        id: app-token
+        uses: actions/create-github-app-token@v1.11.0
+        with:
+          app-id: ${{secrets.GH_APP_ID}}
+          private-key: ${{secrets.GH_APP_PRIVATE_KEY}}
       - name: Release
         run: npx semantic-release
         env:
-          GITHUB_TOKEN: ${{secrets.RELEASE_TOKEN}}
+          GITHUB_TOKEN: ${{steps.app-token.outputs.token}}
           NPM_TOKEN: ${{secrets.NPM_TOKEN}}
