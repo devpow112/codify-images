@@ -30,7 +30,9 @@ jobs:
           echo "update-title=$UPDATE_TITLE" >> $GITHUB_OUTPUT
           echo "update-body=$UPDATE_BODY" >> $GITHUB_OUTPUT
       - name: Update .nvmrc
-        run: echo '${{steps.info.outputs.version}}' > .nvmrc
+        run: echo "$NODE_VERSION" > .nvmrc
+        env:
+          NODE_VERSION: ${{steps.info.outputs.version}}
       - name: Generate app token
         id: app-token
         uses: actions/create-github-app-token@v1.11.0

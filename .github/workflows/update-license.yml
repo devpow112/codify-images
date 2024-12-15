@@ -31,8 +31,9 @@ jobs:
           echo "update-title=$UPDATE_TITLE" >> $GITHUB_OUTPUT
           echo "update-body=$UPDATE_BODY" >> $GITHUB_OUTPUT
       - name: Update LICENSE
-        run: |
-          sed -i -E "s/$REGEX/\1${{steps.info.outputs.license-year}}\2/" LICENSE
+        run: sed -i -E "s/$REGEX/\1$LICENSE_YEAR\2/" LICENSE
+        env:
+          LICENSE_YEAR: ${{steps.info.outputs.license-year}}
       - name: Generate app token
         id: app-token
         uses: actions/create-github-app-token@v1.11.0
