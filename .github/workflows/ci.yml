@@ -14,7 +14,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Set up node
-        uses: actions/setup-node@v4.1.0
+        uses: actions/setup-node@v4.2.0
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -34,7 +34,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4.2.2
       - name: Set up node
-        uses: actions/setup-node@v4.1.0
+        uses: actions/setup-node@v4.2.0
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -43,7 +43,7 @@ jobs:
       - name: Run tests
         run:  npm run test:unit
       - name: Report coverage
-        uses: coverallsapp/github-action@v2.3.4
+        uses: coverallsapp/github-action@v2.3.6
         with:
           github-token: ${{github.token}}
   build:
@@ -54,7 +54,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4.2.2
       - name: Set up node
-        uses: actions/setup-node@v4.1.0
+        uses: actions/setup-node@v4.2.0
         with:
           node-version-file: .nvmrc
           cache: npm
