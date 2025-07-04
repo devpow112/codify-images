@@ -54,7 +54,7 @@
     "@babel/register": "^7.27.1",
     "@commitlint/cli": "^19.8.1",
     "@devpow112/babel-config": "^1.2.4",
-    "@devpow112/commitlint-config": "^2.0.3",
+    "@devpow112/commitlint-config": "^2.0.4",
     "@devpow112/eslint-config": "^3.0.3",
     "@devpow112/semantic-release-config": "^3.0.1",
     "@eslint/compat": "^1.3.1",
