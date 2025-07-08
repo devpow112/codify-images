@@ -51,11 +51,15 @@ describe('codify-images', function() {
         verifyImages(await codifyImages(assetsPath));
       });
 
-      for (const mode of svgModes) {
-        it(`with svg '${mode}'`, async () => {
-          verifyImages(await codifyImages(assetsPath, { svgMode: mode }), mode);
-        });
-      }
+      describe('with svg', () => {
+        for (const mode of svgModes) {
+          it(`mode '${mode}'`, async () => {
+            const images = await codifyImages(assetsPath, { svgMode: mode });
+
+            verifyImages(images, mode);
+          });
+        }
+      });
     });
 
     describe('errors', () => {
@@ -114,11 +118,13 @@ describe('codify-images', function() {
         verifyImages(codifyImagesSync(assetsPath));
       });
 
-      for (const mode of svgModes) {
-        it(`with svg '${mode}'`, () => {
-          verifyImages(codifyImagesSync(assetsPath, { svgMode: mode }), mode);
-        });
-      }
+      describe('with svg', () => {
+        for (const mode of svgModes) {
+          it(`mode '${mode}'`, async () => {
+            verifyImages(codifyImagesSync(assetsPath, { svgMode: mode }), mode);
+          });
+        }
+      });
     });
 
     describe('errors', () => {
