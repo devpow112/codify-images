@@ -15,6 +15,56 @@ const expectedKeys = [...Object.keys(expectedImages), 'testSvg'].filter(
   e => !excludeKeys.includes(e)
 );
 
+const testCLIOptions = [];
+
+for (const es of [5, 6]) {
+  for (const svgMode of ['base64', 'uri', 'mini', 'mini-srcset']) {
+    for (const banner of [true, false]) {
+      for (const doubleQuotes of [true, false]) {
+        for (const indentType of ['space', 'tab']) {
+          const args = [
+            '--es', es,
+            '--svg-mode', svgMode,
+            '--indent-type', indentType
+          ];
+
+          if (!banner) {
+            args.push('--no-banner');
+          }
+
+          if (doubleQuotes) {
+            args.push('--double-quotes');
+          }
+
+          const output = [es, svgMode, banner, doubleQuotes, indentType];
+
+          testCLIOptions.push({
+            output: output.join('/'),
+            args,
+            argsString: args.join(' '),
+            doubleQuotes,
+            svgMode,
+            banner,
+            indentType,
+            es
+          });
+        }
+      }
+    }
+  }
+}
+
+const testInputs = [{
+  path: '../../.github/',
+  type: Error
+}, {
+  path: 'not a path',
+  type: InvalidArgumentError
+}, {
+  path: './coa.test.js',
+  type: InvalidArgumentError
+}];
+
 const execute = async options => {
   const program = new Command();
 
@@ -115,13 +165,13 @@ const validate = async options => {
   }
 };
 
+const consoleLog = global.console.log;
+const consoleError = global.console.error;
+const processExit = global.process.exit;
+
 describe('coa', function() {
   this.timeout(1000);
   this.slow(500);
-
-  const consoleLog = global.console.log;
-  const consoleError = global.console.error;
-  const processExit = global.process.exit;
 
   before(() => {
     const noop = () => { };
@@ -137,7 +187,7 @@ describe('coa', function() {
     global.process.exit = processExit;
   });
 
-  describe('generates', async () => {
+  describe('generates', () => {
     it('with defaults', async () => {
       const options = { output: 'defaults' };
 
@@ -145,105 +195,69 @@ describe('coa', function() {
       await validate(options);
     });
 
-    for (const es of [5, 6]) {
-      for (const svgMode of ['base64', 'uri', 'mini', 'mini-srcset']) {
-        for (const banner of [true, false]) {
-          for (const doubleQuotes of [true, false]) {
-            for (const indentType of ['space', 'tab']) {
-              const args = [
-                '--es', es,
-                '--svg-mode', svgMode,
-                '--indent-type', indentType
-              ];
-
-              if (!banner) {
-                args.push('--no-banner');
-              }
-
-              if (doubleQuotes) {
-                args.push('--double-quotes');
-              }
-
-              const output = [es, svgMode, banner, doubleQuotes, indentType];
-              const options = {
-                output: output.join('/'),
-                args,
-                doubleQuotes,
-                svgMode,
-                banner,
-                indentType,
-                es
-              };
-
-              it(`with options '${args.join(' ')}'`, async () => {
-                await execute(options);
-                await validate(options);
-              });
-            }
-          }
-        }
+    describe('with options', () => {
+      for (const option of testCLIOptions) {
+        it(option.argsString, async () => {
+          await execute(option);
+          await validate(option);
+        });
       }
-    }
+    });
   });
 
   describe('errors', () => {
-    const inputs = [{
-      path: '../../.github/',
-      type: Error
-    }, {
-      path: 'not a path',
-      type: InvalidArgumentError
-    }, {
-      path: './coa.test.js',
-      type: InvalidArgumentError
-    }];
+    describe('with bad input path', () => {
+      for (const input of testInputs) {
+        it(input.path, async () => {
+          const options = { input: input.path };
 
-    for (const input of inputs) {
-      it(`with bad input path '${input.path}'`, async () => {
-        const options = { input: input.path };
+          try {
+            await execute(options);
+          } catch (err) {
+            expect(err).to.be.instanceOf(input.type);
 
-        try {
-          await execute(options);
-        } catch (err) {
-          expect(err).to.be.instanceOf(input.type);
+            return;
+          }
 
-          return;
-        }
+          throw new Error('failed');
+        });
+      }
+    });
 
-        throw new Error('failed');
-      });
-    }
+    describe('with bad indent count', () => {
+      for (const indent of ['not a number', '-1', '']) {
+        it(`${indent || '[empty string]'}`, async () => {
+          const options = { args: ['--indent-count', indent] };
 
-    for (const indent of ['not a number', '-1', '']) {
-      it(`with bad indent count '${indent}'`, async () => {
-        const options = { args: ['--indent-count', indent] };
+          try {
+            await execute(options);
+          } catch (err) {
+            expect(err).to.be.instanceOf(InvalidArgumentError);
 
-        try {
-          await execute(options);
-        } catch (err) {
-          expect(err).to.be.instanceOf(InvalidArgumentError);
+            return;
+          }
 
-          return;
-        }
+          throw new Error('failed');
+        });
+      }
+    });
 
-        throw new Error('failed');
-      });
-    }
+    describe('with bad es version', () => {
+      for (const es of ['not a number', '-1', '4', '']) {
+        it(`${es || '[empty string]'}`, async () => {
+          const options = { args: ['--es', es] };
 
-    for (const es of ['not a number', '-1', '4', '']) {
-      it(`with bad es version '${es}'`, async () => {
-        const options = { args: ['--es', es] };
+          try {
+            await execute(options);
+          } catch (err) {
+            expect(err).to.be.instanceOf(InvalidArgumentError);
 
-        try {
-          await execute(options);
-        } catch (err) {
-          expect(err).to.be.instanceOf(InvalidArgumentError);
+            return;
+          }
 
-          return;
-        }
-
-        throw new Error('failed');
-      });
-    }
+          throw new Error('failed');
+        });
+      }
+    });
   });
 });
