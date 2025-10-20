@@ -65,7 +65,7 @@
     "npm-run-all": "^4",
     "nyc": "^17",
     "rimraf": "^6",
-    "semantic-release": "^24",
+    "semantic-release": "^25",
     "sinon": "^21",
     "sort-package-json": "^3"
   },
