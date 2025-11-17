@@ -57,7 +57,7 @@
     "@devpow112/commitlint-config": "^2",
     "@devpow112/eslint-config": "^4",
     "@devpow112/semantic-release-config": "^3",
-    "@eslint/compat": "^1",
+    "@eslint/compat": "^2",
     "chai": "^4",
     "eslint": "^9",
     "markdownlint-cli": "^0.45",
