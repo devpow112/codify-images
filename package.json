@@ -60,7 +60,7 @@
     "@eslint/compat": "^2",
     "chai": "^4",
     "eslint": "^9",
-    "markdownlint-cli": "^0.46",
+    "markdownlint-cli": "^0.47",
     "mocha": "^11",
     "npm-run-all": "^4",
     "nyc": "^17",
