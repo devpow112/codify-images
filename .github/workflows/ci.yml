@@ -10,11 +10,11 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout
-        uses: actions/checkout@v5.0.1
+        uses: actions/checkout@v6.0.2
         with:
           fetch-depth: 0
       - name: Set up node
-        uses: actions/setup-node@v6.0.0
+        uses: actions/setup-node@v6.2.0
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -32,9 +32,9 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout
-        uses: actions/checkout@v5.0.1
+        uses: actions/checkout@v6.0.2
       - name: Set up node
-        uses: actions/setup-node@v6.0.0
+        uses: actions/setup-node@v6.2.0
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -52,9 +52,9 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout
-        uses: actions/checkout@v5.0.1
+        uses: actions/checkout@v6.0.2
       - name: Set up node
-        uses: actions/setup-node@v6.0.0
+        uses: actions/setup-node@v6.2.0
         with:
           node-version-file: .nvmrc
           cache: npm
