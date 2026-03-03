@@ -63,7 +63,7 @@
     "markdownlint-cli": "^0.47",
     "mocha": "^11",
     "npm-run-all": "^4",
-    "nyc": "^17",
+    "nyc": "^18",
     "rimraf": "^6",
     "semantic-release": "^25",
     "sinon": "^21",
