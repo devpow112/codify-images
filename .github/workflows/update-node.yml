@@ -24,6 +24,7 @@ jobs:
           OLD_VERSION=$(<.nvmrc)
           NEW_VERSION=$(curl -sSf https://resolve-node.vercel.app/lts)
           NEW_VERSION=${NEW_VERSION#'v'}
+          NEW_VERSION=${NEW_VERSION%%.*}
           UPDATE_TITLE="chore(node): bump from $OLD_VERSION to $NEW_VERSION"
           UPDATE_BODY="Bump Node from $OLD_VERSION to $NEW_VERSION."
           echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
