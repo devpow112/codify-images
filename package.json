@@ -50,8 +50,8 @@
     "mkdirp": "^3"
   },
   "devDependencies": {
-    "@babel/cli": "^7",
-    "@babel/register": "^7",
+    "@babel/cli": "^8",
+    "@babel/register": "^8",
     "@commitlint/cli": "^21",
     "@devpow112/babel-config": "^1",
     "@devpow112/commitlint-config": "^2",
